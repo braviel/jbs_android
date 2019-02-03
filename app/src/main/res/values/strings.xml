@@ -1,0 +1,8 @@
+<resources>
+    <string name="app_name">JBS</string>
+    <string name="BotMenu_search">Search</string>
+    <string name="BotMenu_work">Work</string>
+    <string name="BotMenu_event">Event</string>
+    <string name="BotMenu_chat">Chat</string>
+    <string name="BotMenu_profile">Profile</string>
+</resources>
