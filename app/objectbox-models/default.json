@@ -1,0 +1,111 @@
+{
+  "_note1": "KEEP THIS FILE! Check it into a version control system (VCS) like git.",
+  "_note2": "ObjectBox manages crucial IDs for your object model. See docs for details.",
+  "_note3": "If you have VCS merge conflicts, you must resolve them according to ObjectBox docs.",
+  "entities": [
+    {
+      "id": "1:6619163868543714516",
+      "lastPropertyId": "21:5523223840806545311",
+      "name": "Profile",
+      "properties": [
+        {
+          "id": "1:5532474780679673698",
+          "name": "Id"
+        },
+        {
+          "id": "2:4590348845277305217",
+          "indexId": "1:277101005402624280",
+          "name": "ProfileUID"
+        },
+        {
+          "id": "3:1255514427469746787",
+          "name": "ProfilePhone"
+        },
+        {
+          "id": "4:7515923600748380341",
+          "name": "ProfileEmail"
+        },
+        {
+          "id": "5:7791139545155857798",
+          "name": "ProfileUEN"
+        },
+        {
+          "id": "6:5422591758291578025",
+          "name": "Photo"
+        },
+        {
+          "id": "7:8038732153573141592",
+          "name": "CommonName"
+        },
+        {
+          "id": "8:1196177917844504865",
+          "name": "FirstName"
+        },
+        {
+          "id": "9:7362603401390893865",
+          "name": "LastName"
+        },
+        {
+          "id": "10:4408622131038033754",
+          "name": "DoB"
+        },
+        {
+          "id": "11:324135412640547198",
+          "name": "Gender"
+        },
+        {
+          "id": "12:8463129149695875203",
+          "name": "BuildingName"
+        },
+        {
+          "id": "13:2482903329230223413",
+          "name": "Address1"
+        },
+        {
+          "id": "14:1061303462662852508",
+          "name": "Address2"
+        },
+        {
+          "id": "15:2213945290045626634",
+          "name": "PostalCode"
+        },
+        {
+          "id": "16:1736313859859550018",
+          "name": "City"
+        },
+        {
+          "id": "17:5886747138431481683",
+          "name": "Country"
+        },
+        {
+          "id": "18:5998800309776459753",
+          "name": "SysDateCreate"
+        },
+        {
+          "id": "19:650449001131816694",
+          "name": "SysTimeCreate"
+        },
+        {
+          "id": "20:6796884868549322563",
+          "name": "SysDateUpdate"
+        },
+        {
+          "id": "21:5523223840806545311",
+          "name": "SysTimeUpdate"
+        }
+      ],
+      "relations": []
+    }
+  ],
+  "lastEntityId": "1:6619163868543714516",
+  "lastIndexId": "1:277101005402624280",
+  "lastRelationId": "0:0",
+  "lastSequenceId": "0:0",
+  "modelVersion": 4,
+  "modelVersionParserMinimum": 4,
+  "retiredEntityUids": [],
+  "retiredIndexUids": [],
+  "retiredPropertyUids": [],
+  "retiredRelationUids": [],
+  "version": 1
+}
