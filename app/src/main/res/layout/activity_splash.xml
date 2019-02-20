@@ -3,7 +3,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#0099cc"
+    android:background="@color/primaryDarkColor"
     tools:context=".Activity.SplashActivity">
 
     <!-- The primary full-screen view. This can be replaced with whatever view
@@ -15,8 +15,8 @@
         android:layout_height="match_parent"
         android:gravity="center"
         android:keepScreenOn="true"
-        android:text="@string/dummy_content"
-        android:textColor="#33b5e5"
+        android:text="@string/splash_content"
+        android:textColor="@color/primaryLightColor"
         android:textSize="50sp"
         android:textStyle="bold" />
 

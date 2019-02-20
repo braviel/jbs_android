@@ -2,26 +2,22 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android">
     <item android:id="@+id/action_search"
         android:title="@string/BotMenu_search"
-        android:icon="@android:drawable/ic_menu_search"
-        android:iconTint="@color/colorAccent"
+        android:icon="@drawable/ic_search_24px"
         />
     <item android:id="@+id/action_work"
         android:title="@string/BotMenu_work"
-        android:icon="@android:drawable/ic_menu_today"
-        android:iconTint="@color/colorAccent"
+        android:icon="@drawable/ic_work_24px"
         />
     <item android:id="@+id/action_event"
         android:title="@string/BotMenu_event"
-        android:icon="@drawable/ic_store_white_24dp"
-        android:iconTint="@color/colorAccent"
+        android:icon="@drawable/ic_event_note_24px"
         />
     <item android:id="@+id/action_chat"
         android:title="@string/BotMenu_chat"
-        android:icon="@android:drawable/sym_action_chat"
+        android:icon="@drawable/ic_chat_24px"
         />
     <item android:id="@+id/action_profile"
         android:title="@string/BotMenu_profile"
-        android:icon="@drawable/ic_person_white_24dp"
-        android:iconTint="@color/colorAccent"
+        android:icon="@drawable/ic_account_circle_24px"
         />
 </menu>

@@ -1,16 +1,18 @@
 <resources>
     <string name="app_name">JBS</string>
-    <string name="Terms_Conditions">Terms and Condition</string>
+    <string name="Terms_Conditions">Terms and Conditions</string>
     <string name="BotMenu_search">Search</string>
     <string name="BotMenu_work">Work</string>
     <string name="BotMenu_event">Event</string>
     <string name="BotMenu_chat">Chat</string>
     <string name="BotMenu_profile">Profile</string>
-    <string name="Accept"> Accept </string>
+    <string name="AgreeTermsConditions"> Agree &amp; Continue </string>
     <string name="Decline"> Decline </string>
     <string name="title_activity_splash">SplashActivity</string>
-    <string name="dummy_button">Dummy Button</string>
-    <string name="dummy_content">JBS\nmobile App</string>
+    <string name="splash_content">JBS\nmobile App</string>
+    <string name="Confirm_PhoneNo"> Please confirm your country code and enter your phone number</string>
+    <string name="VerifyPhone_Action">To complete your phone number verification, please enter the 6-digit activation code.</string>
+    <string name="Label_TapAgreeAndContinuePolicy">Tap "Agree &amp; Continue" to accept JBSApp Terms of Service and Privacy Policy</string>
     <string name="dummy_term_condition">Lorem Ipsum is simply dummy text of the printing and typesetting industry.
         Lorem Ipsum has been the industry\'s standard dummy text ever since the 1500s,
         when an unknown printer took a galley of type and scrambled it to make a type specimen book.
@@ -30,4 +32,11 @@
         Sections 1.10.32 and 1.10.33 from "de Finibus Bonorum et Malorum" by Cicero are also reproduced in their exact original form,
         accompanied by English versions from the 1914 translation by H. Rackham.
     </string>
+    <string name="phone_number">Phone Number</string>
+    <string name="next">Next</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="VerifyPhone_Info">We have sent you an SMS with a code to the above number.</string>
+    <string name="validate">Validate</string>
 </resources>

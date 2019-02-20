@@ -1,7 +1,9 @@
 package com.example.jbs.Activity;
 
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.core.app.ActivityCompat;
 
+import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -13,14 +15,17 @@ import android.widget.TextView;
 
 import com.example.jbs.R;
 
-public class TermCondition extends AppCompatActivity implements View.OnClickListener {
+public class TermCondition extends AppCompatActivity {
     private TextView termConditionTextView;
     private Button acceptBtn;
+    private Button declineBtn;
     private Intent phoneRegisterIntent;
+    AppCompatActivity activity;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_condition);
+        activity = this;
         getSupportActionBar().hide();
 
         phoneRegisterIntent = new Intent(this, PhoneRegisterActivity.class);
@@ -28,8 +33,22 @@ public class TermCondition extends AppCompatActivity implements View.OnClickList
         termConditionTextView = findViewById(R.id.tvTermCondition);
         termConditionTextView.setMovementMethod(new ScrollingMovementMethod());
 
+        declineBtn = findViewById(R.id.btnDecline);
+        declineBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                activity.finishAffinity();
+            }
+        });
+
         acceptBtn = findViewById(R.id.btnAccept);
-        acceptBtn.setOnClickListener(this);
+        acceptBtn.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(phoneRegisterIntent);
+                finish();
+            }
+        });
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             termConditionTextView.setText(Html.fromHtml(TermConditionHTML, Html.FROM_HTML_MODE_COMPACT));
         } else {
@@ -75,9 +94,4 @@ public class TermCondition extends AppCompatActivity implements View.OnClickList
             "</div>\n" +
             "</div>";
 
-    @Override
-    public void onClick(View v) {
-        startActivity(phoneRegisterIntent);
-        finish();
-    }
 }

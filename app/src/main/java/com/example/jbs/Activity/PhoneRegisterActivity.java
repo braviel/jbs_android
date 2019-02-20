@@ -4,73 +4,84 @@ import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
+import androidx.fragment.app.Fragment;
+import androidx.fragment.app.FragmentManager;
+import androidx.fragment.app.FragmentTransaction;
 
 import android.Manifest;
 import android.app.Activity;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.net.Uri;
 import android.os.Bundle;
 import android.telephony.TelephonyManager;
+import android.view.View;
+import android.widget.Button;
 import android.widget.Toast;
 
+import com.example.jbs.CommonService;
 import com.example.jbs.R;
-import com.google.android.material.textfield.TextInputEditText;
+import com.lamudi.phonefield.PhoneInputLayout;
 
-public class PhoneRegisterActivity extends AppCompatActivity {
-    final int REQUEST_READ_PHONE_STATE = 1;
-    private TextInputEditText tvPhoneNumber;
+public class PhoneRegisterActivity extends AppCompatActivity implements
+        ConfirmPhoneFragment.ConfirmPhoneNumberCallback,
+        VerifyOTPFragment.OnFragmentInteractionListener
+{
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_phone_register);
-        tvPhoneNumber = findViewById(R.id.tvPhoneNumber);
-        Toast.makeText(this, "Init Permission", Toast.LENGTH_LONG).show();
-        CheckPermission(this, Manifest.permission.READ_PHONE_STATE, REQUEST_READ_PHONE_STATE);
-    }
-
-    private void CheckPermission(Activity activity, String perm, int MY_REQUEST_CODE) {
-
-        if(ContextCompat.checkSelfPermission(activity, perm)
-                != PackageManager.PERMISSION_GRANTED) {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(activity, perm)) {
-                // Show explaination
-                ActivityCompat.requestPermissions(activity, new String[]{perm}, MY_REQUEST_CODE);
-            } else {
-                // Request for permission
-                ActivityCompat.requestPermissions(activity, new String[]{perm}, MY_REQUEST_CODE);
-            }
-        } else {
-            //Granted
-            getPhoneNo();
+        if(null == savedInstanceState) {
+            init();
         }
     }
-    private void getPhoneNo() {
-        if(ContextCompat.checkSelfPermission(this, Manifest.permission.READ_PHONE_STATE)
-                == PackageManager.PERMISSION_GRANTED) {
-            TelephonyManager tMgr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-            String phoneNo = tMgr.getLine1Number();
-            if (phoneNo.equals("")) {
-                phoneNo = tMgr.getSubscriberId();
-            }
-            Toast.makeText(this, "Phone No: " + phoneNo, Toast.LENGTH_LONG).show();
-            tvPhoneNumber.setText(phoneNo);
+
+    private void init( ) {
+        ConfirmPhoneFragment confirmPhoneFragment = ConfirmPhoneFragment.newInstance("","");
+        getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack("confirmPhoneFragment")
+                .replace(R.id.ctnFragment, confirmPhoneFragment)
+                .commit();
+    }
+
+    public void replaceFragment(Fragment frag, String tag) {
+        Fragment currFrag = getSupportFragmentManager().findFragmentById(R.id.ctnFragment);
+        if(currFrag.getClass() == frag.getClass()) {
+            return;
+        }
+        if(getSupportFragmentManager().findFragmentByTag(tag) != null){
+            getSupportFragmentManager().popBackStack(tag, FragmentManager.POP_BACK_STACK_INCLUSIVE);
+        }
+
+        getSupportFragmentManager()
+                .beginTransaction()
+                .addToBackStack(tag)
+                .replace(R.id.ctnFragment, frag, tag)
+                .commit();
+    }
+
+    @Override
+    public void onBackPressed() {
+        int fragmentsInStack = getSupportFragmentManager().getBackStackEntryCount();
+        if(fragmentsInStack > 1) {
+            getSupportFragmentManager().popBackStack();
+        } else if (fragmentsInStack == 1) {
+            finish();
         } else {
-            Toast.makeText(this, "No Permission", Toast.LENGTH_LONG).show();
+            super.onBackPressed();
         }
     }
 
     @Override
-    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
-        switch(requestCode) {
-            case REQUEST_READ_PHONE_STATE: {
-                if (grantResults.length > 0 &&
-                    grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    TelephonyManager tMgr = (TelephonyManager) this.getSystemService(Context.TELEPHONY_SERVICE);
-                    getPhoneNo();
-                } else {
-                    //DENIED
-                }
-            }
-        }
+    public void onPhoneNumberConfirmed(String phoneNumber) {
+        VerifyOTPFragment verifyOTPFragment = VerifyOTPFragment.newInstance(phoneNumber);
+        replaceFragment(verifyOTPFragment, "verifyOTPFragment");
+    }
+
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
     }
 }
