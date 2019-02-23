@@ -5,10 +5,10 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".MainActivity">
+    tools:context=".activity.MainActivity">
 
     <FrameLayout
-        android:id="@+id/frame_container"
+        android:id="@+id/ctnFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:background="?android:attr/windowBackground"
@@ -22,11 +22,10 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_gravity="bottom"
-        android:background="@color/primaryColor"
-        app:itemTextColor="@color/colorOnPrimary"
-        app:itemIconTint="@color/colorOnPrimary"
         app:menu="@menu/navigation"
-
+        app:itemIconTint="@color/primaryDarkColor"
+        app:itemTextColor="@color/primaryDarkColor"
+        app:layout_behavior="@string/hide_bottom_view_on_scroll_behavior"
         />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

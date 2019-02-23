@@ -1,9 +1,9 @@
-package com.example.jbs.Activity;
+package com.example.jbs.activity;
 
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.app.ActivityCompat;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
-import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
@@ -16,9 +16,12 @@ import android.widget.TextView;
 import com.example.jbs.R;
 
 public class TermCondition extends AppCompatActivity {
-    private TextView termConditionTextView;
-    private Button acceptBtn;
-    private Button declineBtn;
+    @BindView(R.id.tvTermCondition)
+    TextView termConditionTextView;
+    @BindView(R.id.btnAccept)
+    Button acceptBtn;
+    @BindView(R.id.btnDecline)
+    Button declineBtn;
     private Intent phoneRegisterIntent;
     AppCompatActivity activity;
     @Override
@@ -26,36 +29,23 @@ public class TermCondition extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_term_condition);
         activity = this;
-        getSupportActionBar().hide();
-
+        ButterKnife.bind(this);
         phoneRegisterIntent = new Intent(this, PhoneRegisterActivity.class);
 
-        termConditionTextView = findViewById(R.id.tvTermCondition);
         termConditionTextView.setMovementMethod(new ScrollingMovementMethod());
 
         declineBtn = findViewById(R.id.btnDecline);
-        declineBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                activity.finishAffinity();
-            }
-        });
+        declineBtn.setOnClickListener(v -> activity.finishAffinity());
 
-        acceptBtn = findViewById(R.id.btnAccept);
-        acceptBtn.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                startActivity(phoneRegisterIntent);
-                finish();
-            }
+        acceptBtn.setOnClickListener(v -> {
+            startActivity(phoneRegisterIntent);
+            finish();
         });
         if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {
             termConditionTextView.setText(Html.fromHtml(TermConditionHTML, Html.FROM_HTML_MODE_COMPACT));
         } else {
             termConditionTextView.setText(Html.fromHtml(TermConditionHTML));
         }
-
-
     }
 
     private final String TermConditionHTML = "" +

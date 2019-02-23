@@ -1,28 +1,16 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-
-    <color name="colorOnPrimary">#FFFFFF</color>
-    <color name="colorSecondary">#03DAC6</color>
-    <color name="colorSecondaryVariant">#018786</color>
-    <color name="colorOnSecondary">#000000</color>
-
-    <color name="colorBackground">#FFFFFF</color>
-    <color name="colorOnBackground">#000000</color>
-    <color name="colorSurface">#FFFFFF</color>
-    <color name="colorOnSurface">#000000</color>
+    <color name="colorAccent">#144064</color>
+    <color name="primaryColor">#265586</color>
+    <color name="primaryDarkColor">#144064</color>
 
     <color name="colorError">#C51162</color>
-    <color name="colorOnError">#FFFFFF</color>
-
-    <color name="colorAccent">#00172b</color>
     <color name="black_overlay">#66000000</color>
-
-    <color name="primaryColor">#273d54</color>
-    <color name="primaryLightColor">#526781</color>
-    <color name="primaryDarkColor">#00172b</color>
-    <color name="secondaryColor">#c16883</color>
-    <color name="secondaryLightColor">#f698b2</color>
-    <color name="secondaryDarkColor">#8e3a57</color>
-    <color name="primaryTextColor">#ffffff</color>
-    <color name="secondaryTextColor">#273d54</color>
+    <!---->
+    <!--<color name="primaryLightColor">#ffffff</color>-->
+    <!--<color name="secondaryColor">#c16883</color>-->
+    <!--<color name="secondaryLightColor">#f698b2</color>-->
+    <!--<color name="secondaryDarkColor">#8e3a57</color>-->
+    <!--<color name="primaryTextColor">#ffffff</color>-->
+    <!--<color name="secondaryTextColor">#273d54</color>-->
 </resources>

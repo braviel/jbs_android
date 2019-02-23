@@ -4,7 +4,7 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.TermCondition">
+    tools:context=".activity.TermCondition">
 
     <TextView
         android:id="@+id/Title"
@@ -14,7 +14,6 @@
         android:text="@string/Terms_Conditions"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Headline1"
-        android:textColor="@color/primaryDarkColor"
         android:textSize="30sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
@@ -46,7 +45,6 @@
         android:text="@string/Label_TapAgreeAndContinuePolicy"
         android:textAlignment="center"
         android:textAppearance="@style/TextAppearance.MaterialComponents.Overline"
-        android:textColor="@color/colorAccent"
         app:layout_constraintBottom_toTopOf="@+id/ctnBottomPane"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.5"
@@ -81,7 +79,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/AgreeTermsConditions"
-            android:textColor="@color/colorOnPrimary"
             app:layout_constraintBottom_toBottomOf="parent"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintHorizontal_bias="0.5"

@@ -4,13 +4,12 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".Activity.ConfirmPhoneFragment">
+    tools:context=".activity.ConfirmPhoneFragment">
 
     <TextView
         android:id="@+id/lbConfirmPhoneNo"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:textColor="@color/primaryDarkColor"
         android:text="@string/Confirm_PhoneNo"
         android:textAlignment="center"
         android:textSize="18sp"
@@ -33,6 +32,7 @@
         app:layout_constraintVertical_bias="0.05"
         app:layout_constraintWidth_percent="0.75" />
     <com.google.android.material.button.MaterialButton
+        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
         android:id="@+id/btnNext"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"

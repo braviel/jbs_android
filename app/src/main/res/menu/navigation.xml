@@ -6,7 +6,7 @@
         />
     <item android:id="@+id/action_work"
         android:title="@string/BotMenu_work"
-        android:icon="@drawable/ic_work_24px"
+        android:icon="@drawable/ic_outline_work_outline_24px"
         />
     <item android:id="@+id/action_event"
         android:title="@string/BotMenu_event"
@@ -14,10 +14,10 @@
         />
     <item android:id="@+id/action_chat"
         android:title="@string/BotMenu_chat"
-        android:icon="@drawable/ic_chat_24px"
+        android:icon="@drawable/ic_outline_chat_bubble_outline_24px"
         />
     <item android:id="@+id/action_profile"
         android:title="@string/BotMenu_profile"
-        android:icon="@drawable/ic_account_circle_24px"
+        android:icon="@drawable/ic_outline_account_circle_24px"
         />
 </menu>

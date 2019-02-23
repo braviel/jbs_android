@@ -1,9 +1,8 @@
-package com.example.jbs.Activity;
+package com.example.jbs.activity;
 
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
-import android.net.Uri;
 import android.os.Bundle;
 
 import android.telephony.TelephonyManager;
@@ -20,6 +19,8 @@ import com.lamudi.phonefield.PhoneInputLayout;
 import androidx.annotation.NonNull;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -39,8 +40,10 @@ public class ConfirmPhoneFragment extends Fragment implements CommonService.OnRe
 
 //    private OnFragmentInteractionListener mListener;
 
-    private PhoneInputLayout tvPhoneNumber;
-    private Button btnNext;
+    @BindView(R.id.tvPhoneNumber)
+    PhoneInputLayout tvPhoneNumber;
+    @BindView(R.id.btnNext)
+    Button btnNext;
     private ConfirmPhoneNumberCallback confirmPhoneNumberCallback;
     public ConfirmPhoneFragment() {
         // Required empty public constructor
@@ -71,29 +74,26 @@ public class ConfirmPhoneFragment extends Fragment implements CommonService.OnRe
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_confirm_phone, container, false);
+        ButterKnife.bind(this, rootView);
         init(rootView);
         return rootView;
     }
     private void init(View rootView) {
-        tvPhoneNumber = rootView.findViewById(R.id.tvPhoneNumber);
         tvPhoneNumber.setHint(R.string.phone_number);
         tvPhoneNumber.setDefaultCountry("SG");
         CommonService.requestPermission(getActivity(), Manifest.permission.READ_PHONE_STATE, REQUEST_READ_PHONE_STATE, this);
 
-        btnNext = rootView.findViewById(R.id.btnNext);
-        btnNext.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                boolean valid = true;
-                if(tvPhoneNumber.isValid()) {
-                    tvPhoneNumber.setError(null);
-                } else {
-                    tvPhoneNumber.setError("Invalid phone number");
-                    valid = false;
-                }
-                if(valid) {
+        btnNext.setOnClickListener(v -> {
+            boolean valid = true;
+            if(tvPhoneNumber.isValid()) {
+                tvPhoneNumber.setError(null);
+            } else {
+                tvPhoneNumber.setError("Invalid phone number");
+                valid = false;
+            }
+            if(valid) {
+                if(confirmPhoneNumberCallback != null) {
                     confirmPhoneNumberCallback.onPhoneNumberConfirmed(tvPhoneNumber.getPhoneNumber());
-                    Toast.makeText(getActivity(), tvPhoneNumber.getPhoneNumber(), Toast.LENGTH_LONG).show();
                 }
             }
         });
@@ -102,12 +102,6 @@ public class ConfirmPhoneFragment extends Fragment implements CommonService.OnRe
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
-//        if (context instanceof OnFragmentInteractionListener) {
-//            mListener = (OnFragmentInteractionListener) context;
-//        } else {
-//            throw new RuntimeException(context.toString()
-//                    + " must implement OnFragmentInteractionListener");
-//        }
         if(context instanceof ConfirmPhoneNumberCallback) {
             confirmPhoneNumberCallback = (ConfirmPhoneNumberCallback)context;
         } else {
@@ -119,7 +113,6 @@ public class ConfirmPhoneFragment extends Fragment implements CommonService.OnRe
     @Override
     public void onDetach() {
         super.onDetach();
-//        mListener = null;
         confirmPhoneNumberCallback = null;
     }
     private void getPhoneNo() {

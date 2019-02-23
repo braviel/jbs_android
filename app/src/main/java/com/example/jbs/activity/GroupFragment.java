@@ -1,55 +1,53 @@
-package com.example.jbs.Activity;
+package com.example.jbs.activity;
 
 import android.content.Context;
 import android.net.Uri;
 import android.os.Bundle;
+import android.app.Fragment;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.Button;
-import android.widget.TextView;
-import android.widget.Toast;
 
 import com.example.jbs.R;
-import com.google.android.material.textfield.TextInputEditText;
-
-import java.util.Random;
-
-import androidx.fragment.app.Fragment;
 
 /**
  * A simple {@link Fragment} subclass.
  * Activities that contain this fragment must implement the
- * {@link VerifyOTPFragment.OnFragmentInteractionListener} interface
+ * {@link GroupFragment.OnFragmentInteractionListener} interface
  * to handle interaction events.
- * Use the {@link VerifyOTPFragment#newInstance} factory method to
+ * Use the {@link GroupFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class VerifyOTPFragment extends Fragment {
+public class GroupFragment extends Fragment {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-    private static final String ARG_PHONE_No = "PhoneNumber";
+    private static final String ARG_PARAM1 = "param1";
+    private static final String ARG_PARAM2 = "param2";
 
     // TODO: Rename and change types of parameters
-    private String mPhoneNoParam;
-    private TextInputEditText teOTPCode;
+    private String mParam1;
+    private String mParam2;
+
     private OnFragmentInteractionListener mListener;
 
-    public VerifyOTPFragment() {
+    public GroupFragment() {
         // Required empty public constructor
     }
 
     /**
      * Use this factory method to create a new instance of
      * this fragment using the provided parameters.
-     * @param phoneNoParam Phone number to send OTP.*
-     * @return A new instance of fragment VerifyOTPFragment.
+     *
+     * @param param1 Parameter 1.
+     * @param param2 Parameter 2.
+     * @return A new instance of fragment GroupFragment.
      */
     // TODO: Rename and change types and number of parameters
-    public static VerifyOTPFragment newInstance(String phoneNoParam) {
-        VerifyOTPFragment fragment = new VerifyOTPFragment();
+    public static GroupFragment newInstance(String param1, String param2) {
+        GroupFragment fragment = new GroupFragment();
         Bundle args = new Bundle();
-        args.putString(ARG_PHONE_No, phoneNoParam);
+        args.putString(ARG_PARAM1, param1);
+        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -58,7 +56,8 @@ public class VerifyOTPFragment extends Fragment {
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         if (getArguments() != null) {
-            mPhoneNoParam = getArguments().getString(ARG_PHONE_No);
+            mParam1 = getArguments().getString(ARG_PARAM1);
+            mParam2 = getArguments().getString(ARG_PARAM2);
         }
     }
 
@@ -66,28 +65,7 @@ public class VerifyOTPFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
-        View rootView = inflater.inflate(R.layout.fragment_verify_otp, container, false);
-        final TextView fakeOTP = rootView.findViewById(R.id.tvFakeOTP);
-        Random r = new Random();
-        int randomInt = r.nextInt(999999);
-        String s = String.format("%06d", randomInt);
-        fakeOTP.setText(s);
-
-        teOTPCode = rootView.findViewById(R.id.teOTPCode);
-
-        Button btnValidate = rootView.findViewById(R.id.btnValidate);
-        btnValidate.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                String s = teOTPCode.getText().toString();
-                if(s.equals(fakeOTP.getText().toString())) {
-                    Toast.makeText(getActivity(), "Equal", Toast.LENGTH_LONG).show();
-                } else {
-                    Toast.makeText(getActivity(), "NOT Equal", Toast.LENGTH_LONG).show();
-                }
-            }
-        });
-        return rootView;
+        return inflater.inflate(R.layout.fragment_group, container, false);
     }
 
     // TODO: Rename method, update argument and hook method into UI event

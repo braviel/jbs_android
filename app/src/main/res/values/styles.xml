@@ -1,14 +1,15 @@
 <resources>
 
     <!-- Base application theme. -->
-    <style name="AppTheme" parent="Theme.MaterialComponents.Light">
+    <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
         <!-- Customize your theme here. -->
-        <item name="colorPrimary">@color/primaryColor</item>
+        <!--<item name="colorPrimary">@color/primaryColor</item>-->
         <!--<item name="colorSecondary">@color/colorSecondary</item>-->
-        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <!--<item name="colorPrimaryDark">@color/primaryDarkColor</item>-->
+        <item name="colorError">@color/colorError</item>
         <item name="colorAccent">@color/colorAccent</item>
-        <!--<item name="colorError">@color/colorError</item>-->
-        <item name="android:colorBackground">@color/colorBackground</item>
+        <item name="colorPrimary">@color/primaryColor</item>
+        <item name="colorPrimaryDark">@color/primaryDarkColor</item>
     </style>
 
     <style name="FullscreenTheme" parent="AppTheme">
