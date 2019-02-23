@@ -1,4 +1,4 @@
-package com.example.jbs.Activity;
+package com.example.jbs.activity;
 
 import android.animation.Animator;
 import android.animation.AnimatorListenerAdapter;
@@ -237,7 +237,7 @@ public class LoginActivity extends Activity implements LoaderCallbacks<Cursor> {
     @Override
     public Loader<Cursor> onCreateLoader(int i, Bundle bundle) {
         return new CursorLoader(this,
-                // Retrieve data rows for the device user's 'profile' contact.
+                // Retrieve data rows for the device user's 'mProfile' contact.
                 Uri.withAppendedPath(ContactsContract.Profile.CONTENT_URI,
                         ContactsContract.Contacts.Data.CONTENT_DIRECTORY), ProfileQuery.PROJECTION,
 
