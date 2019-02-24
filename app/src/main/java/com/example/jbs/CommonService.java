@@ -10,12 +10,17 @@ import com.google.gson.GsonBuilder;
 
 //import javax.inject.Singleton;
 
+import java.io.IOException;
+
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
 import androidx.fragment.app.Fragment;
 import androidx.fragment.app.FragmentManager;
 //import dagger.Provides;
+import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
+import okhttp3.Request;
+import okhttp3.Response;
 import okhttp3.logging.HttpLoggingInterceptor;
 import retrofit2.Retrofit;
 import retrofit2.converter.gson.GsonConverterFactory;
@@ -24,7 +29,7 @@ public class CommonService {
     private static final String TAG = CommonService.class.getSimpleName();
     private static final CommonService ourInstance = new CommonService();
     private static String BASE_URL = "https://jbs-bo.herokuapp.com/";
-    private static String LOCAL_URL = "http://vn-hcm3623:5000/";
+//    private static String BASE_URL = "http://vn-hcm3623:5000/";
 
     public static CommonService getInstance() {
         return ourInstance;
@@ -60,7 +65,20 @@ public class CommonService {
         if(retrofit == null) {
             HttpLoggingInterceptor logging = new HttpLoggingInterceptor();
             logging.setLevel(HttpLoggingInterceptor.Level.BODY);
-            OkHttpClient client = new OkHttpClient.Builder().addInterceptor(logging).build();
+            //
+            Interceptor authInterceptor = new Interceptor() {
+                @Override
+                public Response intercept(Chain chain) throws IOException {
+                    Request request = chain.request().newBuilder().addHeader("","").build();
+                    return  chain.proceed(request);
+                }
+            };
+            OkHttpClient.Builder builder = new OkHttpClient.Builder();
+            builder
+                .addInterceptor(logging)
+                .addInterceptor(authInterceptor);
+
+            OkHttpClient client = builder.build();
 
             Log.i(TAG, "Init Retrofit2 with url " + BASE_URL);
             retrofit = new Retrofit.Builder()

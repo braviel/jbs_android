@@ -20,6 +20,7 @@ import com.example.jbs.R;
 import com.example.jbs.room.Profile;
 import com.example.jbs.service.ProfileWebService;
 import com.example.jbs.viewmodel.ProfileViewModel;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
@@ -57,13 +58,9 @@ public class ViewProfileFragment extends Fragment implements
         View.OnClickListener
 {
     public static final String TAG = ViewProfileFragment.class.getSimpleName();
-    public static final String UID_KEY = "uid";
-//    @Inject
-    ViewModelProvider.Factory viewModelFactory;
-    private ProfileViewModel viewModel;
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PROFILEUID = "ProfileUID";
-    private static final String ARG_PARAM2 = "param2";
 
     private String mParam2;
     @BindView(R.id.pgLoading)
@@ -88,6 +85,8 @@ public class ViewProfileFragment extends Fragment implements
     Toolbar toolBar;
     @BindView(R.id.btnUpdate)
     Button btnUpdate;
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout appBarLayout;
     @BindViews({R.id.tvCommonName, R.id.tvFirstName, R.id.tvLastName, R.id.tvEmail, R.id.tvUEN,
             R.id.tvAddress1, R.id.tvAddress2, R.id.tvDOB, R.id.tvBuildingName, R.id.tvPostalCode})
     List<TextInputEditText> mTextFields;
@@ -109,19 +108,10 @@ public class ViewProfileFragment extends Fragment implements
         mProfileUID = sharedPref.getString(getString(R.string.KeyProfileUID), "");
         Log.i(TAG, "Get Profile No: " + mProfileUID);
     }
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param profileUID Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ViewProfileFragment.
-     */
-    public static ViewProfileFragment newInstance(String profileUID, String param2) {
+    public static ViewProfileFragment newInstance(String profileUID) {
         ViewProfileFragment fragment = new ViewProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PROFILEUID, profileUID);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -135,7 +125,6 @@ public class ViewProfileFragment extends Fragment implements
         mProfileService = CommonService.getInstance().provideApiWebservice();
         if (getArguments() != null) {
             mProfileUID = getArguments().getString(ARG_PROFILEUID);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
         if(mProfileUID.equals("")) {
             getCurProfile();
@@ -147,7 +136,7 @@ public class ViewProfileFragment extends Fragment implements
         // Inflate the layout for this fragment
         View rootView = inflater.inflate(R.layout.fragment_view_profile, container, false);
         ButterKnife.bind(this, rootView);
-        tvCommonName.setText("Nghia Hoang");
+
         AppCompatActivity activity = (AppCompatActivity)getActivity();
         activity.setSupportActionBar(toolBar);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
@@ -164,50 +153,8 @@ public class ViewProfileFragment extends Fragment implements
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        this.configureDagger();
-//        this.configureViewModel();
     }
-    // -----------------
-    // CONFIGURATION
-    // -----------------
 
-//    private void configureDagger(){
-//        AndroidSupportInjection.inject(this);
-//    }
-//
-//    private void configureViewModel(){
-//        String profileUID = getArguments().getString(ARG_PROFILEUID);
-//        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel.class);
-//        viewModel.init(profileUID);
-//        viewModel.getProfile().observe(this, mProfile -> updateUI(mProfile));
-//    }
-    // -----------------
-    // UPDATE UI
-    // -----------------
-
-    private void updateUI(){
-        if (mProfile != null){
-            this.tvPhoneNumber.setText(mProfile.getProfilePhone());
-            this.tvCommonName.setText(mProfile.getCommonName());
-            this.tvFirstName.setText(mProfile.getFirstName());
-            this.tvLastName.setText(mProfile.getLastName());
-            this.tvDOB.setText(prettyDate(mProfile.getDoB()));
-            this.tvUEN.setText(mProfile.getProfileUEN());
-            this.tvEmail.setText(mProfile.getProfileEmail());
-        }
-    }
-    private void updateModel(){
-        {
-//            Glide.with(this).load(user.getAvatar_url()).apply(RequestOptions.circleCropTransform()).into(imageView);
-            mProfile.setProfilePhone(this.tvPhoneNumber.getText().toString());
-            mProfile.setCommonName(this.tvCommonName.getText().toString());
-            mProfile.setFirstName(this.tvFirstName.getText().toString());
-            mProfile.setLastName(this.tvLastName.getText().toString());
-            mProfile.setDoB(this.tvDOB.getText().toString());
-            mProfile.setProfileUEN(this.tvUEN.getText().toString());
-            mProfile.setProfileEmail(this.tvEmail.getText().toString());
-        }
-    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -221,8 +168,8 @@ public class ViewProfileFragment extends Fragment implements
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.profile_menu, menu);
     }
 
     @Override
@@ -231,9 +178,7 @@ public class ViewProfileFragment extends Fragment implements
         Log.i(TAG, "Prepare Menu" );
         menu.findItem(R.id.menu_profile_edit).setVisible(!mIsEditMode);
         menu.findItem(R.id.menu_profile_save).setVisible(mIsEditMode);
-
         btnUpdate.setVisibility(mIsEditMode ? View.VISIBLE : View.INVISIBLE);
-
         toggleTextFields();
     }
 
@@ -297,7 +242,7 @@ public class ViewProfileFragment extends Fragment implements
                     mIsEditMode = false;
                     mIsProfileExisted = true;
                     getActivity().invalidateOptionsMenu();
-                    Snackbar.make(getActivity().findViewById(R.id.ctnFragment), "Profile Updated", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(appBarLayout, "Profile Updated", Snackbar.LENGTH_LONG).show();
                 }
                 pgLoading.setVisibility(View.INVISIBLE);
             }
@@ -323,7 +268,7 @@ public class ViewProfileFragment extends Fragment implements
                     mIsEditMode = false;
                     mIsProfileExisted = true;
                     getActivity().invalidateOptionsMenu();
-                    Snackbar.make(getActivity().findViewById(R.id.ctnFragment), "Profile created", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(appBarLayout, "Profile created", Snackbar.LENGTH_LONG).show();
                 }
                 pgLoading.setVisibility(View.INVISIBLE);
             }
@@ -335,16 +280,28 @@ public class ViewProfileFragment extends Fragment implements
             }
         });
     }
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
+    private void updateUI(){
+        if (mProfile != null){
+            this.tvPhoneNumber.setText(mProfile.getProfilePhone());
+            this.tvCommonName.setText(mProfile.getCommonName());
+            this.tvFirstName.setText(mProfile.getFirstName());
+            this.tvLastName.setText(mProfile.getLastName());
+            this.tvDOB.setText(prettyDate(mProfile.getDoB()));
+            this.tvUEN.setText(mProfile.getProfileUEN());
+            this.tvEmail.setText(mProfile.getProfileEmail());
+        }
+    }
+    private void updateModel(){
+//      Glide.with(this).load(user.getAvatar_url()).apply(RequestOptions.circleCropTransform()).into(imageView);
+        mProfile.setProfilePhone(this.tvPhoneNumber.getText().toString());
+        mProfile.setCommonName(this.tvCommonName.getText().toString());
+        mProfile.setFirstName(this.tvFirstName.getText().toString());
+        mProfile.setLastName(this.tvLastName.getText().toString());
+        mProfile.setDoB(this.tvDOB.getText().toString());
+        mProfile.setProfileUEN(this.tvUEN.getText().toString());
+        mProfile.setProfileEmail(this.tvEmail.getText().toString());
+    }
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
@@ -358,12 +315,15 @@ public class ViewProfileFragment extends Fragment implements
             if(profile != null) {
                 mProfile = profile;
                 mIsProfileExisted = true;
+                Snackbar.make(appBarLayout,
+                        "Logged in as " + mProfileUID ,
+                        Snackbar.LENGTH_LONG).show();
             } else {
                 Profile p = new Profile();
                 p.setProfilePhone(mProfileUID);
                 mProfile = p;
                 Log.i(TAG, "First time login, please update profile ");
-                Snackbar.make(getActivity().findViewById(R.id.ctnFragment),
+                Snackbar.make(appBarLayout,
                         "First time login, please update profile ",
                         Snackbar.LENGTH_LONG).show();
                 mIsEditMode = true;
@@ -398,10 +358,10 @@ public class ViewProfileFragment extends Fragment implements
         }
     }
     private String prettyDate(String strDate) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'");
         if(strDate == null) {
             return "";
         }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'");
         String outDateStr = strDate;
         try {
             Date date = format.parse(strDate);

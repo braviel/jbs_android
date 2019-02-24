@@ -45,7 +45,7 @@ public class MainActivity extends MyFragmentActivity implements
                     case R.id.action_chat:
                         return true;
                     case R.id.action_profile:
-                        ViewProfileFragment viewProfileFragment = ViewProfileFragment.newInstance("","");
+                        ViewProfileFragment viewProfileFragment = ViewProfileFragment.newInstance("");
                         replaceFragment(viewProfileFragment, R.id.ctnFragment ,ViewProfileFragment.TAG);
                         return true;
                     case R.id.action_search:
@@ -55,7 +55,7 @@ public class MainActivity extends MyFragmentActivity implements
             }
         });
         if(true) {//TODO: first Time login
-            ViewProfileFragment viewProfileFragment = ViewProfileFragment.newInstance("","");
+            ViewProfileFragment viewProfileFragment = ViewProfileFragment.newInstance("");
             getSupportFragmentManager()
                     .beginTransaction()
                     .addToBackStack(ViewProfileFragment.TAG)

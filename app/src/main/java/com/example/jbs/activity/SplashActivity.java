@@ -3,6 +3,7 @@ package com.example.jbs.activity;
 import androidx.appcompat.app.AppCompatActivity;
 
 import android.content.Intent;
+import android.content.SharedPreferences;
 import android.os.Bundle;
 import android.os.Handler;
 
@@ -16,8 +17,15 @@ public class SplashActivity extends AppCompatActivity {
         setContentView(R.layout.activity_splash);
         myIntent = new Intent(this, TermCondition.class);
         new Handler().postDelayed(() -> {
-            startActivity(myIntent);
-            finish();
+            SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+            String profileUID = pref.getString( getString(R.string.KeyProfileUID), "");
+            if(profileUID != null && !profileUID.isEmpty()) {
+                Intent i = new Intent(this, MainActivity.class);
+                startActivity(i);
+            } else {
+                startActivity(myIntent);
+                finish();
+            }
         }, 1000);
     }
 }
