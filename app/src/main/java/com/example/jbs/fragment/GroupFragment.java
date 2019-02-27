@@ -1,4 +1,4 @@
-package com.example.jbs.activity;
+package com.example.jbs.fragment;
 
 import android.content.Context;
 import android.net.Uri;

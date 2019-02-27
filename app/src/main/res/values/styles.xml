@@ -1,18 +1,22 @@
-<resources>
+<resources xmlns:tools="http://schemas.android.com/tools">
 
     <!-- Base application theme. -->
     <style name="AppTheme" parent="Theme.MaterialComponents.Light.NoActionBar">
-        <!-- Customize your theme here. -->
-        <!--<item name="colorPrimary">@color/primaryColor</item>-->
-        <!--<item name="colorSecondary">@color/colorSecondary</item>-->
-        <!--<item name="colorPrimaryDark">@color/primaryDarkColor</item>-->
         <item name="colorError">@color/colorError</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="colorPrimary">@color/primaryColor</item>
         <item name="colorPrimaryDark">@color/primaryDarkColor</item>
+        <item name="android:textColorPrimary">@color/textColorPrimary</item>
+        <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
-    <style name="ToolbarTheme" parent="ThemeOverlay.MaterialComponents.ActionBar">
-        <item name="android:actionMenuTextColor">@android:color/white</item>
+    <style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">
+        <item name="android:background">?attr/colorAccent</item>
+        <item name="android:theme">@style/ThemeOverlay.MaterialComponents.ActionBar</item>
+        <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
+    </style>
+    <style name="Button"  parent="Widget.MaterialComponents.Button">
+        <item name="backgroundTint">@color/primaryDarkColor</item>
+        <item name="android:textColor">@color/textColorPrimary</item>
     </style>
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>

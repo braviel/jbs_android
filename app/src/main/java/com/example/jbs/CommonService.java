@@ -14,8 +14,6 @@ import java.io.IOException;
 
 import androidx.core.app.ActivityCompat;
 import androidx.core.content.ContextCompat;
-import androidx.fragment.app.Fragment;
-import androidx.fragment.app.FragmentManager;
 //import dagger.Provides;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -28,9 +26,11 @@ import retrofit2.converter.gson.GsonConverterFactory;
 public class CommonService {
     private static final String TAG = CommonService.class.getSimpleName();
     private static final CommonService ourInstance = new CommonService();
-    private static String BASE_URL = "https://jbs-bo.herokuapp.com/";
-//    private static String BASE_URL = "http://vn-hcm3623:5000/";
-
+    public static String SERVICE_BASE_URL = "https://jbs-bo.herokuapp.com/";
+//    private static String SERVICE_BASE_URL = "http://vn-hcm3623:5000/";
+    private static String TOKEN="eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9" +
+        ".eyJpZCI6MSwibmFtZSI6IkFudGhvbnkgVmFsaWQgVXNlciIsImlhdCI6MTQyNTQ3MzUzNX0" +
+        ".Y_uFBFnqtF22fFuCd8bHP8VYrFKtn_Jmy9z1clHo_6Y";
     public static CommonService getInstance() {
         return ourInstance;
     }
@@ -69,7 +69,8 @@ public class CommonService {
             Interceptor authInterceptor = new Interceptor() {
                 @Override
                 public Response intercept(Chain chain) throws IOException {
-                    Request request = chain.request().newBuilder().addHeader("","").build();
+                    Request request = chain.request().newBuilder().addHeader("Authorization",
+                            TOKEN).build();
                     return  chain.proceed(request);
                 }
             };
@@ -80,10 +81,10 @@ public class CommonService {
 
             OkHttpClient client = builder.build();
 
-            Log.i(TAG, "Init Retrofit2 with url " + BASE_URL);
+            Log.i(TAG, "Init Retrofit2 with url " + SERVICE_BASE_URL);
             retrofit = new Retrofit.Builder()
                     .addConverterFactory(GsonConverterFactory.create(gson))
-                    .baseUrl(BASE_URL)
+                    .baseUrl(SERVICE_BASE_URL)
                     .client(client)
                     .build();
         }

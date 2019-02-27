@@ -1,16 +1,24 @@
 package com.example.jbs.activity;
 
 import androidx.annotation.NonNull;
-import androidx.fragment.app.Fragment;
-//import dagger.android.AndroidInjection;
-//import dagger.android.DispatchingAndroidInjector;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
+import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 
 import com.example.jbs.MyFragmentActivity;
 import com.example.jbs.R;
+import com.example.jbs.fragment.GroupFragment;
+import com.example.jbs.fragment.ListGroupFragment;
+import com.example.jbs.fragment.MyGroupRecyclerViewAdapter;
+import com.example.jbs.fragment.ProfileMenuFragment;
+import com.example.jbs.fragment.ViewEventFragment;
+import com.example.jbs.fragment.ViewProfileFragment;
+import com.example.jbs.fragment.dummy.DummyContent;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
 
 //import javax.inject.Inject;
@@ -18,18 +26,23 @@ import com.google.android.material.bottomnavigation.BottomNavigationView;
 public class MainActivity extends MyFragmentActivity implements
         ViewProfileFragment.OnFragmentInteractionListener,
         ViewEventFragment.OnFragmentInteractionListener,
-        GroupFragment.OnFragmentInteractionListener
+        GroupFragment.OnFragmentInteractionListener,
+        ProfileMenuFragment.OnFragmentInteractionListener,
+        ListGroupFragment.OnListFragmentInteractionListener
 {
-//    @Inject
-//    DispatchingAndroidInjector<Fragment> dispatchingAndroidInjector;
-
+    public static String TAG = MainActivity.class.getSimpleName();
     private static String PROFILE_UID = "+6585536798";
+    @BindView(R.id.bot_navigation)
+    BottomNavigationView bottomNavigationView;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-//        this.configureDagger();
-        BottomNavigationView bottomNavigationView = findViewById(R.id.bot_navigation);
+        ButterKnife.bind(this);
+
+        SharedPreferences pref = getSharedPreferences("pref", MODE_PRIVATE);
+        String profileUID = pref.getString( getString(R.string.KeyProfileUID), "");
+
         bottomNavigationView.setOnNavigationItemSelectedListener(new BottomNavigationView.OnNavigationItemSelectedListener() {
             @Override
             public boolean onNavigationItemSelected(@NonNull MenuItem menuItem) {
@@ -45,8 +58,14 @@ public class MainActivity extends MyFragmentActivity implements
                     case R.id.action_chat:
                         return true;
                     case R.id.action_profile:
-                        ViewProfileFragment viewProfileFragment = ViewProfileFragment.newInstance("");
-                        replaceFragment(viewProfileFragment, R.id.ctnFragment ,ViewProfileFragment.TAG);
+                        Log.i(TAG, "Navigate to ProfileMenu");
+                        if(profileUID == null || profileUID.isEmpty()) {
+                            ViewProfileFragment viewProfileFragment = ViewProfileFragment.newInstance("");
+                            replaceFragment(viewProfileFragment, R.id.ctnFragment ,ViewProfileFragment.TAG);
+                        } else {
+                            ProfileMenuFragment profileMenuFragment = ProfileMenuFragment.newInstance("", "");
+                            replaceFragment(profileMenuFragment, R.id.ctnFragment, ProfileMenuFragment.TAG);
+                        }
                         return true;
                     case R.id.action_search:
                         return true;
@@ -54,7 +73,8 @@ public class MainActivity extends MyFragmentActivity implements
                 return false;
             }
         });
-        if(true) {//TODO: first Time login
+
+        if(profileUID == null || profileUID.isEmpty()) {
             ViewProfileFragment viewProfileFragment = ViewProfileFragment.newInstance("");
             getSupportFragmentManager()
                     .beginTransaction()
@@ -62,11 +82,36 @@ public class MainActivity extends MyFragmentActivity implements
                     .replace(R.id.ctnFragment, viewProfileFragment)
                     .commit();
             bottomNavigationView.setSelectedItemId(R.id.action_profile);
+        } else {
+            ViewEventFragment viewEventFragment = ViewEventFragment.newInstance("","");
+            getSupportFragmentManager()
+                    .beginTransaction()
+                    .addToBackStack(viewEventFragment.TAG)
+                    .replace(R.id.ctnFragment, viewEventFragment)
+                    .commit();
+            bottomNavigationView.setSelectedItemId(R.id.action_event);
+        }
+    }
+
+    @Override
+    public void onBackPressed() {
+        int fragmentsInStack = getSupportFragmentManager().getBackStackEntryCount();
+        if(fragmentsInStack > 1) {
+            getSupportFragmentManager().popBackStack();
+        } else if (fragmentsInStack == 1) {
+            finish();
+        } else {
+            super.onBackPressed();
         }
     }
 
     @Override
     public void onFragmentInteraction(Uri uri) {
+
+    }
+
+    @Override
+    public void onListFragmentInteraction(DummyContent.DummyItem item) {
 
     }
 //    private void configureDagger(){

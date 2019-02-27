@@ -1,4 +1,4 @@
-package com.example.jbs.di;
+package com.example.jbs.repo;
 
 import java.lang.annotation.Documented;
 import java.lang.annotation.ElementType;

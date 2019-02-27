@@ -1,11 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorAccent">#144064</color>
-    <color name="primaryColor">#265586</color>
-    <color name="primaryDarkColor">#144064</color>
+    <color name="colorAccent">#03A9F4</color>
+    <color name="primaryColor">#2D7CCF</color>
+    <color name="primaryDarkColor">#225F92</color>
 
     <color name="colorError">#C51162</color>
     <color name="black_overlay">#66000000</color>
+    <color name="textColorPrimary">#12314B</color>
+    <color name="toolbarIconColor">@color/textColorPrimary</color>
+
     <!---->
     <!--<color name="primaryLightColor">#ffffff</color>-->
     <!--<color name="secondaryColor">#c16883</color>-->

@@ -1,4 +1,4 @@
-package com.example.jbs.activity;
+package com.example.jbs.fragment;
 
 import android.content.Context;
 import android.content.SharedPreferences;
@@ -13,17 +13,24 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
+import android.widget.ImageView;
 import android.widget.ProgressBar;
 
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.example.jbs.CommonService;
 import com.example.jbs.R;
+import com.example.jbs.repo.DataRepo;
 import com.example.jbs.room.Profile;
 import com.example.jbs.service.ProfileWebService;
-import com.example.jbs.viewmodel.ProfileViewModel;
+import com.google.android.material.appbar.AppBarLayout;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.io.IOException;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -36,10 +43,10 @@ import androidx.appcompat.app.AppCompatActivity;
 import androidx.appcompat.widget.Toolbar;
 import androidx.coordinatorlayout.widget.CoordinatorLayout;
 import androidx.fragment.app.Fragment;
-import androidx.lifecycle.ViewModelProvider;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
+import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
@@ -57,15 +64,13 @@ public class ViewProfileFragment extends Fragment implements
         View.OnClickListener
 {
     public static final String TAG = ViewProfileFragment.class.getSimpleName();
-    public static final String UID_KEY = "uid";
-//    @Inject
-    ViewModelProvider.Factory viewModelFactory;
-    private ProfileViewModel viewModel;
+
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PROFILEUID = "ProfileUID";
-    private static final String ARG_PARAM2 = "param2";
 
     private String mParam2;
+    @BindView(R.id.imgAvatar)
+    ImageView imgAvatar;
     @BindView(R.id.pgLoading)
     ProgressBar pgLoading;
     @BindView(R.id.root_view)
@@ -88,6 +93,8 @@ public class ViewProfileFragment extends Fragment implements
     Toolbar toolBar;
     @BindView(R.id.btnUpdate)
     Button btnUpdate;
+    @BindView(R.id.app_bar_layout)
+    AppBarLayout appBarLayout;
     @BindViews({R.id.tvCommonName, R.id.tvFirstName, R.id.tvLastName, R.id.tvEmail, R.id.tvUEN,
             R.id.tvAddress1, R.id.tvAddress2, R.id.tvDOB, R.id.tvBuildingName, R.id.tvPostalCode})
     List<TextInputEditText> mTextFields;
@@ -96,7 +103,6 @@ public class ViewProfileFragment extends Fragment implements
     //
     private boolean mIsProfileExisted = false;
     private String mProfileUID;
-    Profile mProfile;
     ProfileWebService mProfileService;
     private OnFragmentInteractionListener mListener;
     //
@@ -109,19 +115,10 @@ public class ViewProfileFragment extends Fragment implements
         mProfileUID = sharedPref.getString(getString(R.string.KeyProfileUID), "");
         Log.i(TAG, "Get Profile No: " + mProfileUID);
     }
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param profileUID Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ViewProfileFragment.
-     */
-    public static ViewProfileFragment newInstance(String profileUID, String param2) {
+    public static ViewProfileFragment newInstance(String profileUID) {
         ViewProfileFragment fragment = new ViewProfileFragment();
         Bundle args = new Bundle();
         args.putString(ARG_PROFILEUID, profileUID);
-        args.putString(ARG_PARAM2, param2);
         fragment.setArguments(args);
         return fragment;
     }
@@ -130,12 +127,9 @@ public class ViewProfileFragment extends Fragment implements
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setHasOptionsMenu(true);
-        mProfile = new Profile();
-        CommonService.getInstance().initWebservice();
-        mProfileService = CommonService.getInstance().provideApiWebservice();
+//        mProfile = new Profile();
         if (getArguments() != null) {
             mProfileUID = getArguments().getString(ARG_PROFILEUID);
-            mParam2 = getArguments().getString(ARG_PARAM2);
         }
         if(mProfileUID.equals("")) {
             getCurProfile();
@@ -145,69 +139,34 @@ public class ViewProfileFragment extends Fragment implements
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
+        Log.i(TAG, TAG + "CreateView");
         View rootView = inflater.inflate(R.layout.fragment_view_profile, container, false);
         ButterKnife.bind(this, rootView);
-        tvCommonName.setText("Nghia Hoang");
+
         AppCompatActivity activity = (AppCompatActivity)getActivity();
         activity.setSupportActionBar(toolBar);
         activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
         activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
-        Log.i(TAG, "Curr Phone No: " + mProfileUID);
-        mProfile.setProfilePhone(mProfileUID);
         btnUpdate.setOnClickListener(this);
-        pgLoading.setVisibility(View.VISIBLE);
-        new GetProfileTask().execute(mProfileUID);
-
+        Log.i(TAG, "Curr Phone No: " + mProfileUID);
+//        mProfile.setProfilePhone(mProfileUID);
+        CommonService.getInstance().initWebservice();
+        mProfileService = CommonService.getInstance().provideApiWebservice();
+        Profile p = DataRepo.getInstance().getProfile();
+        if(p == null) {
+            Log.i(TAG, "Fetching profile info : " + mProfileUID);
+            new GetProfileTask().execute(mProfileUID);
+        } else {
+            updateUI(p);
+        }
         return rootView;
     }
 
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-//        this.configureDagger();
-//        this.configureViewModel();
     }
-    // -----------------
-    // CONFIGURATION
-    // -----------------
 
-//    private void configureDagger(){
-//        AndroidSupportInjection.inject(this);
-//    }
-//
-//    private void configureViewModel(){
-//        String profileUID = getArguments().getString(ARG_PROFILEUID);
-//        viewModel = ViewModelProviders.of(this, viewModelFactory).get(ProfileViewModel.class);
-//        viewModel.init(profileUID);
-//        viewModel.getProfile().observe(this, mProfile -> updateUI(mProfile));
-//    }
-    // -----------------
-    // UPDATE UI
-    // -----------------
-
-    private void updateUI(){
-        if (mProfile != null){
-            this.tvPhoneNumber.setText(mProfile.getProfilePhone());
-            this.tvCommonName.setText(mProfile.getCommonName());
-            this.tvFirstName.setText(mProfile.getFirstName());
-            this.tvLastName.setText(mProfile.getLastName());
-            this.tvDOB.setText(prettyDate(mProfile.getDoB()));
-            this.tvUEN.setText(mProfile.getProfileUEN());
-            this.tvEmail.setText(mProfile.getProfileEmail());
-        }
-    }
-    private void updateModel(){
-        {
-//            Glide.with(this).load(user.getAvatar_url()).apply(RequestOptions.circleCropTransform()).into(imageView);
-            mProfile.setProfilePhone(this.tvPhoneNumber.getText().toString());
-            mProfile.setCommonName(this.tvCommonName.getText().toString());
-            mProfile.setFirstName(this.tvFirstName.getText().toString());
-            mProfile.setLastName(this.tvLastName.getText().toString());
-            mProfile.setDoB(this.tvDOB.getText().toString());
-            mProfile.setProfileUEN(this.tvUEN.getText().toString());
-            mProfile.setProfileEmail(this.tvEmail.getText().toString());
-        }
-    }
     @Override
     public void onAttach(Context context) {
         super.onAttach(context);
@@ -221,8 +180,8 @@ public class ViewProfileFragment extends Fragment implements
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
-        inflater.inflate(R.menu.profile_menu, menu);
         super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.profile_menu, menu);
     }
 
     @Override
@@ -231,9 +190,7 @@ public class ViewProfileFragment extends Fragment implements
         Log.i(TAG, "Prepare Menu" );
         menu.findItem(R.id.menu_profile_edit).setVisible(!mIsEditMode);
         menu.findItem(R.id.menu_profile_save).setVisible(mIsEditMode);
-
         btnUpdate.setVisibility(mIsEditMode ? View.VISIBLE : View.INVISIBLE);
-
         toggleTextFields();
     }
 
@@ -257,7 +214,6 @@ public class ViewProfileFragment extends Fragment implements
         return super.onOptionsItemSelected(item);
     }
     private void toggleTextFields() {
-        Log.i(TAG, "List TF: " + mTextFields.size());
         for (TextInputEditText tv:mTextFields) {
             tv.setEnabled(mIsEditMode);
         }
@@ -279,7 +235,7 @@ public class ViewProfileFragment extends Fragment implements
                 if(mIsProfileExisted) {
                     updateProfile();
                 } else {
-                    createProfile();
+                    createProfile(DataRepo.getInstance().getProfile());
                 }
                 break;
         }
@@ -287,17 +243,18 @@ public class ViewProfileFragment extends Fragment implements
     }
     private void updateProfile() {
         Log.i(TAG, "Updating Profile ");
-        Call<Profile> profileUpdate = mProfileService.updateProfile(mProfileUID, mProfile);
+        Profile profile = DataRepo.getInstance().getProfile();
+        Call<Profile> profileUpdate = mProfileService.updateProfile(mProfileUID, profile);
         pgLoading.setVisibility(View.VISIBLE);
         profileUpdate.enqueue(new Callback<Profile>() {
             @Override
             public void onResponse(Call<Profile> call, Response<Profile> response) {
                 int code = response.code();
-                if(code == 200) {
+                if (code == 200) {
                     mIsEditMode = false;
                     mIsProfileExisted = true;
                     getActivity().invalidateOptionsMenu();
-                    Snackbar.make(getActivity().findViewById(R.id.ctnFragment), "Profile Updated", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(appBarLayout, "Profile Updated", Snackbar.LENGTH_LONG).show();
                 }
                 pgLoading.setVisibility(View.INVISIBLE);
             }
@@ -308,12 +265,13 @@ public class ViewProfileFragment extends Fragment implements
                 pgLoading.setVisibility(View.INVISIBLE);
             }
         });
+
     }
-    private void createProfile() {
+    private void createProfile(Profile profile) {
         Log.i(TAG, "Updating Profile ");
-        mProfile.setProfileUID(mProfile.getProfilePhone());
-        mProfile.setGender("M");
-        Call<Profile> profileUpdate = mProfileService.createProfile(mProfile);
+        profile.setProfileUID(profile.getProfilePhone());
+        profile.setGender("M");
+        Call<Profile> profileUpdate = mProfileService.createProfile(profile);
         pgLoading.setVisibility(View.VISIBLE);
         profileUpdate.enqueue(new Callback<Profile>() {
             @Override
@@ -323,7 +281,7 @@ public class ViewProfileFragment extends Fragment implements
                     mIsEditMode = false;
                     mIsProfileExisted = true;
                     getActivity().invalidateOptionsMenu();
-                    Snackbar.make(getActivity().findViewById(R.id.ctnFragment), "Profile created", Snackbar.LENGTH_LONG).show();
+                    Snackbar.make(appBarLayout, "Profile created", Snackbar.LENGTH_LONG).show();
                 }
                 pgLoading.setVisibility(View.INVISIBLE);
             }
@@ -335,16 +293,40 @@ public class ViewProfileFragment extends Fragment implements
             }
         });
     }
-    /**
-     * This interface must be implemented by activities that contain this
-     * fragment to allow an interaction in this fragment to be communicated
-     * to the activity and potentially other fragments contained in that
-     * activity.
-     * <p>
-     * See the Android Training lesson <a href=
-     * "http://developer.android.com/training/basics/fragments/communicating.html"
-     * >Communicating with Other Fragments</a> for more information.
-     */
+
+    private void updateUI(Profile profile){
+        if (profile != null){
+            try {
+                final String encodedURL = CommonService.SERVICE_BASE_URL + "profile/" +
+                        URLEncoder.encode(profile.getProfileUID(), "UTF-8") + "/avatar";
+                Glide.with(getActivity())
+                        .load(encodedURL)
+                        .diskCacheStrategy(DiskCacheStrategy.ALL)
+                        .apply(RequestOptions.circleCropTransform())
+                        .into(this.imgAvatar);
+            } catch(UnsupportedEncodingException exp) {
+                Log.e(TAG, exp.getMessage());
+            }
+            this.tvPhoneNumber.setText(profile.getProfilePhone());
+            this.tvCommonName.setText(profile.getCommonName());
+            this.tvFirstName.setText(profile.getFirstName());
+            this.tvLastName.setText(profile.getLastName());
+            this.tvDOB.setText(prettyDate(profile.getDoB()));
+            this.tvUEN.setText(profile.getProfileUEN());
+            this.tvEmail.setText(profile.getProfileEmail());
+        }
+    }
+    private void updateModel(){
+        Profile profile = DataRepo.getInstance().getProfile();
+        profile.setProfilePhone(this.tvPhoneNumber.getText().toString());
+        profile.setCommonName(this.tvCommonName.getText().toString());
+        profile.setFirstName(this.tvFirstName.getText().toString());
+        profile.setLastName(this.tvLastName.getText().toString());
+        profile.setDoB(this.tvDOB.getText().toString());
+        profile.setProfileUEN(this.tvUEN.getText().toString());
+        profile.setProfileEmail(this.tvEmail.getText().toString());
+        DataRepo.getInstance().setProfile(profile);
+    }
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
@@ -356,21 +338,24 @@ public class ViewProfileFragment extends Fragment implements
             super.onPostExecute(profile);
             pgLoading.setVisibility(View.INVISIBLE);
             if(profile != null) {
-                mProfile = profile;
+                DataRepo.getInstance().setProfile(profile);
                 mIsProfileExisted = true;
+                Snackbar.make(appBarLayout,
+                        "Logged in as " + mProfileUID ,
+                        Snackbar.LENGTH_LONG).show();
+                updateUI(profile);
             } else {
                 Profile p = new Profile();
                 p.setProfilePhone(mProfileUID);
-                mProfile = p;
+//                mProfile = p;
                 Log.i(TAG, "First time login, please update profile ");
-                Snackbar.make(getActivity().findViewById(R.id.ctnFragment),
+                Snackbar.make(appBarLayout,
                         "First time login, please update profile ",
                         Snackbar.LENGTH_LONG).show();
                 mIsEditMode = true;
                 mIsProfileExisted = false;
                 getActivity().invalidateOptionsMenu();
             }
-            updateUI();
         }
 
         @Override
@@ -396,12 +381,18 @@ public class ViewProfileFragment extends Fragment implements
             }
             return null;
         }
+
+        @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            pgLoading.setVisibility(View.VISIBLE);
+        }
     }
     private String prettyDate(String strDate) {
-        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'");
         if(strDate == null) {
             return "";
         }
+        SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.S'Z'");
         String outDateStr = strDate;
         try {
             Date date = format.parse(strDate);

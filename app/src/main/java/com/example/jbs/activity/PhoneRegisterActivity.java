@@ -6,6 +6,8 @@ import android.util.Log;
 
 import com.example.jbs.MyFragmentActivity;
 import com.example.jbs.R;
+import com.example.jbs.fragment.ConfirmPhoneFragment;
+import com.example.jbs.fragment.VerifyOTPFragment;
 
 public class PhoneRegisterActivity extends MyFragmentActivity implements
         ConfirmPhoneFragment.ConfirmPhoneNumberCallback,
