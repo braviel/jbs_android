@@ -1,5 +1,6 @@
 package com.example.jbs.service;
 
+import com.example.jbs.room.Group;
 import com.example.jbs.room.Profile;
 
 import java.util.List;
@@ -13,14 +14,14 @@ import retrofit2.http.Path;
 
 public interface GroupWebService {
     @GET("/group")
-    Call<List<Profile>> getProfiles();
+    Call<List<Group>> getGroups();
 
     @GET("/group/{id}")
-    Call<Profile> getProfile(@Path("id") String profileUID);
+    Call<Group> getGroup(@Path("id") String groupUID);
 
     @POST("/group")
-    Call<Profile> createProfile(@Body Profile user);
+    Call<Group> createGroup(@Body Group group);
 
     @PUT("/group/{id}")
-    Call<Profile> updateProfile(@Path("id") String profileUID, @Body Profile profile);
+    Call<Group> updateGroup(@Path("id") String groupUID, @Body Group group);
 }

@@ -17,6 +17,7 @@ import com.example.jbs.fragment.ListGroupFragment;
 import com.example.jbs.fragment.MyGroupRecyclerViewAdapter;
 import com.example.jbs.fragment.ProfileMenuFragment;
 import com.example.jbs.fragment.ViewEventFragment;
+import com.example.jbs.fragment.ViewGroupFragment;
 import com.example.jbs.fragment.ViewProfileFragment;
 import com.example.jbs.fragment.dummy.DummyContent;
 import com.google.android.material.bottomnavigation.BottomNavigationView;
@@ -28,7 +29,8 @@ public class MainActivity extends MyFragmentActivity implements
         ViewEventFragment.OnFragmentInteractionListener,
         GroupFragment.OnFragmentInteractionListener,
         ProfileMenuFragment.OnFragmentInteractionListener,
-        ListGroupFragment.OnListFragmentInteractionListener
+        ListGroupFragment.OnListFragmentInteractionListener,
+        ViewGroupFragment.OnFragmentInteractionListener
 {
     public static String TAG = MainActivity.class.getSimpleName();
     private static String PROFILE_UID = "+6585536798";

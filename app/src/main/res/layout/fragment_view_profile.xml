@@ -18,7 +18,7 @@
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             app:contentScrim="@color/primaryColor"
-            app:layout_scrollFlags="scroll|snapMargins"
+            app:layout_scrollFlags="scroll|exitUntilCollapsed"
             android:fitsSystemWindows="true"
             >
             <androidx.appcompat.widget.Toolbar
@@ -33,6 +33,7 @@
     <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:elevation="@dimen/oct"
         android:scrollbars="none"
         app:behavior_overlapTop="30dp"
         app:layout_behavior="@string/appbar_scrolling_view_behavior"
@@ -49,7 +50,7 @@
             android:orientation="vertical"
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
-                <de.hdodenhof.circleimageview.CircleImageView
+                <androidx.appcompat.widget.AppCompatImageView
                     xmlns:app="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
                     android:layout_height="175dp"
