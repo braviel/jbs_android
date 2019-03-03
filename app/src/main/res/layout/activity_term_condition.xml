@@ -63,7 +63,7 @@
 
         <Button
             android:id="@+id/btnDecline"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+            style="@style/ButtonOutline"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:elevation="0dp"
@@ -75,6 +75,7 @@
             app:layout_constraintTop_toTopOf="parent" />
 
         <Button
+            style="@style/Button"
             android:id="@+id/btnAccept"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"

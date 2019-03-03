@@ -5,12 +5,18 @@ import android.net.Uri;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 
 import com.example.jbs.R;
+import com.example.jbs.activity.MainActivity;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -20,7 +26,7 @@ import androidx.fragment.app.Fragment;
  * Use the {@link ViewEventFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ViewEventFragment extends Fragment {
+public class ViewEventFragment extends BaseFragment {
     public static final String TAG = ViewEventFragment.class.getSimpleName();
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -29,7 +35,8 @@ public class ViewEventFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
-
+    @BindView(R.id.toolBar)
+    Toolbar toolbar;
     private OnFragmentInteractionListener mListener;
 
     public ViewEventFragment() {
@@ -68,7 +75,10 @@ public class ViewEventFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         Log.i(TAG, TAG + " CreateView");
-        return inflater.inflate(R.layout.fragment_view_event, container, false);
+        View rootView = inflater.inflate(R.layout.fragment_view_event, container, false);
+        ButterKnife.bind(this, rootView);
+        useToolBar(toolbar, true);
+        return rootView;
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -76,6 +86,16 @@ public class ViewEventFragment extends Fragment {
         if (mListener != null) {
             mListener.onFragmentInteraction(uri);
         }
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:
+                ((MainActivity)getActivity()).onBackPressed();
+                return true;
+        }
+        return false;
     }
 
     @Override

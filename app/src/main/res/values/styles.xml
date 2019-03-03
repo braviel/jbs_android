@@ -10,13 +10,28 @@
         <item name="android:windowLightStatusBar" tools:targetApi="m">true</item>
     </style>
     <style name="ToolbarTheme" parent="Widget.AppCompat.Toolbar">
-        <item name="android:background">?attr/colorAccent</item>
+        <item name="android:background">@color/primaryColor</item>
         <item name="android:theme">@style/ThemeOverlay.MaterialComponents.ActionBar</item>
         <item name="android:popupTheme">@style/ThemeOverlay.AppCompat.Light</item>
     </style>
     <style name="Button"  parent="Widget.MaterialComponents.Button">
         <item name="backgroundTint">@color/primaryDarkColor</item>
+        <item name="android:textColor">@color/colorBackground</item>
+    </style>
+    <style name="ButtonOutline"  parent="Widget.MaterialComponents.Button.OutlinedButton">
         <item name="android:textColor">@color/textColorPrimary</item>
+    </style>
+    <style name="TextButton.Icon" parent="@style/Widget.MaterialComponents.Button.TextButton.Icon">
+        <item name="iconTint">@color/textColorPrimary</item>
+    </style>
+    <style name="DangerButton"  parent="Widget.MaterialComponents.Button.OutlinedButton">
+        <item name="backgroundTint">?android:attr/colorBackground</item>
+        <item name="android:textColor">@color/colorError</item>
+        <item name="rippleColor">@color/colorError</item>
+    </style>
+    <style name="Switcher" parent="Widget.AppCompat.CompoundButton.Switch">
+        <item name="android:textColorPrimary">@color/primaryDarkColor</item>
+        <item name="android:thumbTint">@color/primaryDarkColor</item>
     </style>
     <style name="FullscreenTheme" parent="AppTheme">
         <item name="android:actionBarStyle">@style/FullscreenActionBarStyle</item>

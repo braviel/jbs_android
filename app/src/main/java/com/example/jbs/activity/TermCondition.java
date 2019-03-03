@@ -13,9 +13,10 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.TextView;
 
+import com.example.jbs.MyFragmentActivity;
 import com.example.jbs.R;
 
-public class TermCondition extends AppCompatActivity {
+public class TermCondition extends MyFragmentActivity {
     @BindView(R.id.tvTermCondition)
     TextView termConditionTextView;
     @BindView(R.id.btnAccept)

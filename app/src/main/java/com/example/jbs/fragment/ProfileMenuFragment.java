@@ -1,12 +1,16 @@
 package com.example.jbs.fragment;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -20,12 +24,17 @@ import com.bumptech.glide.request.RequestOptions;
 import com.example.jbs.CommonService;
 import com.example.jbs.MyFragmentActivity;
 import com.example.jbs.R;
+import com.example.jbs.activity.MainActivity;
+import com.example.jbs.activity.SettingsActivity;
+import com.example.jbs.activity.SplashActivity;
 import com.example.jbs.controller.ProfileController;
 import com.example.jbs.room.Profile;
 import com.example.jbs.repo.DataRepo;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 
+import androidx.annotation.NonNull;
+import androidx.appcompat.widget.Toolbar;
 import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.ButterKnife;
@@ -39,7 +48,7 @@ import butterknife.OnClick;
  * Use the {@link ProfileMenuFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ProfileMenuFragment extends Fragment implements
+public class ProfileMenuFragment extends BaseFragment implements
         View.OnClickListener
 {
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
@@ -55,15 +64,8 @@ public class ProfileMenuFragment extends Fragment implements
     public ProfileMenuFragment() {
         // Required empty public constructor
     }
-
-    /**
-     * Use this factory method to create a new instance of
-     * this fragment using the provided parameters.
-     *
-     * @param param1 Parameter 1.
-     * @param param2 Parameter 2.
-     * @return A new instance of fragment ProfileMenuFragment.
-     */
+    @BindView(R.id.toolBar)
+    Toolbar toolbar;
     @BindView(R.id.imgAvatar)
     ImageView imgAvatar;
     @BindView(R.id.lbPhoneNumber)
@@ -74,6 +76,8 @@ public class ProfileMenuFragment extends Fragment implements
     ProgressBar pgLoading;
     @BindView(R.id.btnManageGroup)
     Button btnManageGroup;
+    @BindView(R.id.btnSetting)
+    Button btnSetting;
     private String mProfileUID;
     public static ProfileMenuFragment newInstance(String param1, String param2) {
         ProfileMenuFragment fragment = new ProfileMenuFragment();
@@ -100,6 +104,7 @@ public class ProfileMenuFragment extends Fragment implements
         Log.i(TAG, TAG + " CreateView");
         View rootView = inflater.inflate(R.layout.fragment_profile_menu, container, false);
         ButterKnife.bind(this, rootView);
+        useToolBar(toolbar, true);
         Profile p = DataRepo.getInstance().getProfile();
         if(p == null) {
             new PrepareTask().execute();
@@ -108,6 +113,20 @@ public class ProfileMenuFragment extends Fragment implements
         }
         return rootView;
     }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(@NonNull MenuItem item) {
+        if(item.getItemId() == android.R.id.home) {
+            ((MainActivity)getActivity()).onBackPressed();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
     @OnClick(R.id.btnManageGroup)
     public void onBtnManageGroupClick(View v) {
         Log.i(TAG, "on Manage Group");
@@ -148,7 +167,7 @@ public class ProfileMenuFragment extends Fragment implements
                 );
     }
     @Override
-    @OnClick({R.id.imgAvatar, R.id.lbPhoneNumber, R.id.lbCommonName})
+    @OnClick({R.id.imgAvatar, R.id.lbPhoneNumber, R.id.lbCommonName, R.id.btnSetting, R.id.btnUnbind})
     public void onClick(View v) {
         int id = v.getId();
         switch (id) {
@@ -156,6 +175,21 @@ public class ProfileMenuFragment extends Fragment implements
             case R.id.lbCommonName:
             case R.id.lbPhoneNumber:
                 onEditProfileClick(v);
+                break;
+            case R.id.btnSetting:
+
+                break;
+            case R.id.btnUnbind:
+                try {
+                    SharedPreferences sPref = getActivity().getSharedPreferences(getString(R.string.kJbsPref), Context.MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sPref.edit();
+                    editor.remove(getString(R.string.kJbsProfileUID));
+                    editor.apply();
+                    Intent iSplashScreen = new Intent(getActivity(), SplashActivity.class);
+                    startActivity(iSplashScreen);
+                }catch (NullPointerException ex) {
+                    Log.e(TAG, ex.getMessage());
+                }
                 break;
         }
     }
@@ -189,8 +223,8 @@ public class ProfileMenuFragment extends Fragment implements
 
         @Override
         protected Profile doInBackground(Void... voids) {
-            SharedPreferences sharedPref = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
-            mProfileUID = sharedPref.getString(getString(R.string.KeyProfileUID), "");
+            SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.kJbsPref), Context.MODE_PRIVATE);
+            mProfileUID = sharedPref.getString(getString(R.string.kJbsProfileUID), "");
             Profile p = ProfileController.getInstance().getProfile(mProfileUID);
             return p;
         }

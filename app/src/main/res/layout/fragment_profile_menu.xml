@@ -1,121 +1,169 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:paddingHorizontal="@dimen/activity_horizontal_margin"
-    android:paddingVertical="@dimen/activity_vertical_margin"
-    android:orientation="vertical"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:weightSum="7"
     tools:context=".fragment.ProfileMenuFragment">
-    <com.google.android.material.card.MaterialCardView
+    <include layout="@layout/appbar_layout"/>
+    <androidx.core.widget.NestedScrollView
         android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="2">
+        android:layout_height="match_parent"
+        android:elevation="@dimen/oct"
+        android:scrollbars="none"
+        app:behavior_overlapTop="30dp"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
         <LinearLayout
-            style="@style/Widget.MaterialComponents.CardView"
-            android:orientation="horizontal"
             android:layout_width="match_parent"
-            android:weightSum="5"
-            android:padding="@dimen/quad"
-            android:layout_height="wrap_content">
-                <androidx.appcompat.widget.AppCompatImageView
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="2"
-                android:id="@+id/imgAvatar"
-                android:src="@drawable/unknown_user"
-                android:layout_margin="@dimen/quad"
-                android:elevation="@dimen/quad"
-                android:fadingEdgeLength="@dimen/oct"
-                />
+            android:layout_height="wrap_content"
+            android:layout_margin="@dimen/oct"
+            android:orientation="vertical">
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:layout_width="0dp"
-                android:layout_height="match_parent"
-                android:layout_weight="3"
-                android:layout_margin="@dimen/activity_horizontal_margin"
-                android:orientation="vertical">
+            <com.google.android.material.card.MaterialCardView
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+                <!--android:layout_weight="3"-->
 
-                <TextView
-                    android:id="@+id/lbPhoneNumber"
-                    style="@style/TextAppearance.AppCompat.Headline"
+                <LinearLayout
+                    style="@style/Widget.MaterialComponents.CardView"
+                    android:orientation="horizontal"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginTop="8dp"
-                    android:layout_marginBottom="8dp"
-                    android:textAlignment="textStart"
-                    app:layout_constraintBottom_toTopOf="@+id/lbCommonName"
+                    android:weightSum="5"
+                    android:padding="@dimen/quad"
+                    >
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="2"
+                        android:id="@+id/imgAvatar"
+                        android:src="@drawable/unknown_user"
+                        android:layout_margin="@dimen/quad"
+                        android:elevation="@dimen/quad"
+                        android:fadingEdgeLength="@dimen/oct"
+                        android:layout_gravity="center"
+                        />
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="match_parent"
+                        android:layout_weight="3"
+                        android:layout_margin="@dimen/activity_horizontal_margin"
+                        android:orientation="vertical">
+                        <TextView
+                            android:id="@+id/lbPhoneNumber"
+                            style="@style/TextAppearance.AppCompat.Headline"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:layout_marginBottom="8dp"
+                            android:textAlignment="textStart"
+                            app:layout_constraintBottom_toTopOf="@+id/lbCommonName"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toTopOf="parent"
+                            app:layout_constraintVertical_chainStyle="packed"
+                            tools:text="+6585536777" />
+
+                        <TextView
+                            android:id="@+id/lbCommonName"
+                            style="@style/TextAppearance.AppCompat.Headline"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:textAlignment="textStart"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintEnd_toEndOf="parent"
+                            app:layout_constraintStart_toStartOf="parent"
+                            app:layout_constraintTop_toBottomOf="@id/lbPhoneNumber"
+                            tools:text="Common Name" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+
+
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:id="@+id/linearLayout2"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                >
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnManageGroup"
+                    style="@style/ButtonOutline"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="@string/manage_groups"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toTopOf="@+id/btnSetting"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_constraintVertical_chainStyle="packed"
-                    tools:text="+6585536777" />
+                    app:layout_constraintVertical_bias="0.1"
+                    app:layout_constraintVertical_chainStyle="spread"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.7" />
 
-                <TextView
-                    android:id="@+id/lbCommonName"
-                    style="@style/TextAppearance.AppCompat.Headline"
-                    android:layout_width="match_parent"
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSetting"
+                    style="@style/ButtonOutline"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:textAlignment="textStart"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginBottom="9dp"
+                    android:text="@string/settings"
+                    app:layout_constraintBottom_toTopOf="@id/btnSwitchRole"
+                    app:layout_constraintEnd_toEndOf="@+id/btnManageGroup"
+                    app:layout_constraintStart_toStartOf="@+id/btnManageGroup"
+                    app:layout_constraintTop_toBottomOf="@+id/btnManageGroup" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSwitchRole"
+                    style="@style/ButtonOutline"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Switch Role"
+                    app:layout_constrainedWidth="true"
+                    app:layout_constraintBottom_toTopOf="@id/btnUnbind"
+                    app:layout_constraintEnd_toEndOf="@+id/btnManageGroup"
+                    app:layout_constraintStart_toStartOf="@+id/btnManageGroup"
+                    app:layout_constraintTop_toBottomOf="@id/btnSetting"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.7" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnUnbind"
+                    style="@style/DangerButton"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:text="Unbind account"
+                    app:layout_constrainedWidth="true"
                     app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/lbPhoneNumber"
-                    tools:text="Common Name" />
+                    app:layout_constraintEnd_toEndOf="@+id/btnManageGroup"
+                    app:layout_constraintStart_toStartOf="@+id/btnManageGroup"
+                    app:layout_constraintTop_toBottomOf="@id/btnSwitchRole"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:layout_constraintWidth_default="percent"
+                    app:layout_constraintWidth_percent="0.7" />
+                <ProgressBar
+                    tools:visibility="gone"
+                    android:id="@+id/pgLoading"
+                    android:layout_width="120dp"
+                    android:layout_height="120dp"
+                    android:layout_gravity="center_horizontal|center_vertical"
+                    android:visibility="invisible"
+                    android:elevation="8dp"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintLeft_toLeftOf="parent"
+                    app:layout_constraintRight_toRightOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_bias="0.075" />
             </androidx.constraintlayout.widget.ConstraintLayout>
         </LinearLayout>
-    </com.google.android.material.card.MaterialCardView>
+    </androidx.core.widget.NestedScrollView>
 
-
-    <androidx.constraintlayout.widget.ConstraintLayout
-        android:id="@+id/linearLayout2"
-        android:layout_width="match_parent"
-        android:layout_height="0dp"
-        android:layout_weight="5">
-
-        <com.google.android.material.button.MaterialButton
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:id="@+id/btnManageGroup"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:text="@string/manage_groups"
-            app:layout_constrainedWidth="true"
-            app:layout_constraintWidth_percent="0.7"
-            app:layout_constraintBottom_toTopOf="@+id/btnSetting"
-            app:layout_constraintEnd_toEndOf="parent"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.1"
-            app:layout_constraintVertical_chainStyle="packed"
-            app:layout_constraintWidth_default="percent" />
-
-        <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnSetting"
-            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-            android:layout_width="0dp"
-            android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
-            android:layout_marginBottom="9dp"
-            android:text="@string/settings"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintEnd_toEndOf="@+id/btnManageGroup"
-            app:layout_constraintStart_toStartOf="@+id/btnManageGroup"
-            app:layout_constraintTop_toBottomOf="@+id/btnManageGroup" />
-
-        <ProgressBar
-            android:id="@+id/pgLoading"
-            android:layout_width="120dp"
-            android:layout_height="120dp"
-            android:layout_gravity="center_horizontal|center_vertical"
-            android:visibility="invisible"
-            android:elevation="8dp"
-            app:layout_constraintBottom_toBottomOf="parent"
-            app:layout_constraintLeft_toLeftOf="parent"
-            app:layout_constraintRight_toRightOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            app:layout_constraintVertical_bias="0.075" />
-    </androidx.constraintlayout.widget.ConstraintLayout>
-
-</LinearLayout>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

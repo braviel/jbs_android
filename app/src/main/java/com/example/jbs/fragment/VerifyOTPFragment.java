@@ -11,12 +11,16 @@ import android.widget.Button;
 import android.widget.TextView;
 
 import com.example.jbs.R;
+import com.example.jbs.activity.MainActivity;
+import com.example.jbs.activity.PhoneRegisterActivity;
 import com.google.android.material.snackbar.Snackbar;
 import com.google.android.material.textfield.TextInputEditText;
 
 import java.util.Random;
 
 import androidx.fragment.app.Fragment;
+import butterknife.BindView;
+import butterknife.ButterKnife;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -29,12 +33,17 @@ import androidx.fragment.app.Fragment;
 public class VerifyOTPFragment extends Fragment {
     private static final String TAG = "VerifyOTPFragment";
     // TODO: Rename parameter arguments, choose names that match
-    // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PHONE_No = "PhoneNumber";
 
     // TODO: Rename and change types of parameters
     private String mPhoneNoParam;
+//    @BindView(R.id.teOTPCode)
     private TextInputEditText teOTPCode;
+//    @BindView(R.id.lbPhoneNumber)
+    TextView lbPhoneNumber;
+//    @BindView(R.id.btnAnotherPhone)
+    Button btnAnotherPhoneNo;
+    Button btnValidate;
     private OnFragmentInteractionListener mListener;
     private View rootView;
     public VerifyOTPFragment() {
@@ -69,7 +78,12 @@ public class VerifyOTPFragment extends Fragment {
                              Bundle savedInstanceState) {
         // Inflate the layout for this fragment
         rootView = inflater.inflate(R.layout.fragment_verify_otp, container, false);
-        TextView lbPhoneNumber = rootView.findViewById(R.id.lbPhoneNumber);
+//        ButterKnife.bind(this, rootView);
+        lbPhoneNumber = rootView.findViewById(R.id.lbPhoneNumber);
+        teOTPCode = rootView.findViewById(R.id.teOTPCode);
+        btnAnotherPhoneNo = rootView.findViewById(R.id.btnAnotherPhone);
+        btnValidate = rootView.findViewById(R.id.btnValidate);
+
         lbPhoneNumber.setText(mPhoneNoParam);
         final TextView lbFakeOTP = rootView.findViewById(R.id.tvFakeOTP);
         Random r = new Random();
@@ -77,18 +91,15 @@ public class VerifyOTPFragment extends Fragment {
         String s = String.format("%06d", randomInt);
         lbFakeOTP.setText(s);
 
-        teOTPCode = rootView.findViewById(R.id.teOTPCode);
-
-        final Button btnValidate = rootView.findViewById(R.id.btnValidate);
         btnValidate.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 String s = teOTPCode.getText().toString();
                 if(s.equals(lbFakeOTP.getText().toString())) {
                     if(mListener != null) {
-                        SharedPreferences sharedPref = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
+                        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.kJbsPref), Context.MODE_PRIVATE);
                         SharedPreferences.Editor editor = sharedPref.edit();
-                        editor.putString(getString(R.string.KeyProfileUID), mPhoneNoParam);
+                        editor.putString(getString(R.string.kJbsProfileUID), mPhoneNoParam);
                         editor.commit();
                         Log.i(TAG, "Signed in as: " + mPhoneNoParam);
                         mListener.onFragmentInteraction();
@@ -98,6 +109,12 @@ public class VerifyOTPFragment extends Fragment {
                             .make(btnValidate, "Invalid OTP code", Snackbar.LENGTH_SHORT)
                             .show();
                 }
+            }
+        });
+        btnAnotherPhoneNo.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                ((PhoneRegisterActivity)getActivity()).onBackPressed();
             }
         });
         return rootView;

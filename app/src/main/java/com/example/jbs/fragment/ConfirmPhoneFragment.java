@@ -3,9 +3,12 @@ package com.example.jbs.fragment;
 import android.Manifest;
 import android.content.Context;
 import android.content.pm.PackageManager;
+import android.database.Cursor;
+import android.net.Uri;
 import android.os.Bundle;
 
 import android.telephony.TelephonyManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -31,15 +34,16 @@ import butterknife.ButterKnife;
  * create an instance of this fragment.
  */
 
-public class ConfirmPhoneFragment extends Fragment implements CommonService.OnRequestPermissionListener{
+public class ConfirmPhoneFragment extends BaseFragment implements CommonService.OnRequestPermissionListener{
     public interface ConfirmPhoneNumberCallback {
         void onPhoneNumberConfirmed(String phoneNumber);
     }
-
+    public final static String TAG = ConfirmPhoneFragment.class.getSimpleName();
+    private static final String ARG_PHONE_NO = "PhoneNo";
     final int REQUEST_READ_PHONE_STATE = 1;
 
 //    private OnFragmentInteractionListener mListener;
-
+    String mPhoneNo;
     @BindView(R.id.tvPhoneNumber)
     PhoneInputLayout tvPhoneNumber;
     @BindView(R.id.btnNext)
@@ -60,6 +64,7 @@ public class ConfirmPhoneFragment extends Fragment implements CommonService.OnRe
     public static ConfirmPhoneFragment newInstance(String param1, String param2) {
         ConfirmPhoneFragment fragment = new ConfirmPhoneFragment();
         Bundle args = new Bundle();
+        args.putString(ARG_PHONE_NO, param1);
         fragment.setArguments(args);
         return fragment;
     }
@@ -67,6 +72,10 @@ public class ConfirmPhoneFragment extends Fragment implements CommonService.OnRe
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        if (getArguments() != null) {
+            mPhoneNo = getArguments().getString(ARG_PHONE_NO);
+//            Toast.makeText(getActivity(), "PhoneNo: " + mPhoneNo, Toast.LENGTH_LONG).show();
+        }
     }
 
     @Override
@@ -81,7 +90,18 @@ public class ConfirmPhoneFragment extends Fragment implements CommonService.OnRe
     private void init(View rootView) {
         tvPhoneNumber.setHint(R.string.phone_number);
         tvPhoneNumber.setDefaultCountry("SG");
-        CommonService.requestPermission(getActivity(), Manifest.permission.READ_PHONE_STATE, REQUEST_READ_PHONE_STATE, this);
+        tvPhoneNumber.setPhoneNumber(mPhoneNo);
+//        String[] permissions = {
+//                Manifest.permission.READ_PHONE_STATE,
+//                Manifest.permission.READ_CONTACTS
+//        };
+//        if(!CommonService.hasPermissions(getActivity(), permissions)) {
+//            CommonService.requestPermission(getActivity(),
+//                    permissions,
+//                    REQUEST_READ_PHONE_STATE, this);
+//        } else {
+////            getPhoneNo();
+//        }
 
         btnNext.setOnClickListener(v -> {
             boolean valid = true;
@@ -115,17 +135,33 @@ public class ConfirmPhoneFragment extends Fragment implements CommonService.OnRe
         super.onDetach();
         confirmPhoneNumberCallback = null;
     }
+
     private void getPhoneNo() {
+        Log.i(TAG, "Attempt to get phone no");
         if(ContextCompat.checkSelfPermission(getActivity(), Manifest.permission.READ_PHONE_STATE)
                 == PackageManager.PERMISSION_GRANTED) {
             TelephonyManager tMgr = (TelephonyManager) getActivity().getSystemService(Context.TELEPHONY_SERVICE);
-            String phoneNo = tMgr.getLine1Number();
-            if (phoneNo.equals("")) {
-                phoneNo = tMgr.getSubscriberId();
+            mPhoneNo = tMgr.getLine1Number();
+            if (!mPhoneNo.equals("")) {
+                tvPhoneNumber.setPhoneNumber(mPhoneNo);
             } else {
-                tvPhoneNumber.setPhoneNumber(phoneNo);
+//                mPhoneNo = tMgr.getSubscriberId();
+                String main_data[] = {"data1", "is_primary", "data3", "data2", "data1", "is_primary", "photo_uri", "mimetype"};
+                Object object = getActivity().getContentResolver().query(Uri.withAppendedPath(android.provider.ContactsContract.Profile.CONTENT_URI, "data"),
+                        main_data, "mimetype=?",
+                        new String[]{"vnd.android.cursor.item/phone_v2"},
+                        "is_primary DESC");
+                if (object != null) {
+                    do {
+                        if (!((Cursor) (object)).moveToNext())
+                            break;
+                        // This is the phoneNumber
+                        mPhoneNo = ((Cursor) (object)).getString(4);
+                    } while (true);
+                    ((Cursor) (object)).close();
+                }
             }
-            Toast.makeText(getActivity(), "Phone No: " + phoneNo, Toast.LENGTH_LONG).show();
+            Toast.makeText(getActivity(), "Phone No: " + mPhoneNo, Toast.LENGTH_LONG).show();
 
         } else {
             Toast.makeText(getActivity(), "No Permission", Toast.LENGTH_LONG).show();
@@ -148,7 +184,7 @@ public class ConfirmPhoneFragment extends Fragment implements CommonService.OnRe
     }
 
     @Override
-    public void onRequested() {
+    public void onPermissionRequested(int REQ_CODE) {
 
     }
 //    /**

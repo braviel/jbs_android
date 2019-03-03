@@ -3,6 +3,8 @@ package com.example.jbs.room;
 import com.google.gson.annotations.Expose;
 import com.google.gson.annotations.SerializedName;
 
+import java.util.List;
+
 import androidx.annotation.NonNull;
 import androidx.room.Entity;
 import androidx.room.PrimaryKey;
@@ -128,7 +130,17 @@ public class Group {
     @SerializedName("updateAt")
     @Expose
     private String updatedAt;
-    public Group(@NonNull String groupUID, String groupName, String groupPhone, String groupEmail, byte[] groupLogo, String groupLogoURL, String buildingName, String address1, String address2, String postalCode) {
+
+    @SerializedName("GroupMembers")
+    @Expose
+    List<GroupMember> GroupMembers;
+
+    public Group() {
+    }
+
+    public Group(@NonNull String groupUID, String groupName, String groupPhone, String groupEmail,
+                 byte[] groupLogo, String groupLogoURL, String buildingName, String address1,
+                 String address2, String postalCode) {
         GroupUID = groupUID;
         GroupName = groupName;
         GroupPhone = groupPhone;
@@ -140,7 +152,13 @@ public class Group {
         Address2 = address2;
         PostalCode = postalCode;
     }
+    public List<GroupMember> getGroupMembers() {
+        return GroupMembers;
+    }
 
+    public void setGroupMembers(List<GroupMember> groupMembers) {
+        GroupMembers = groupMembers;
+    }
     public void setCreatedAt(String createdAt) {
         this.createdAt = createdAt;
     }

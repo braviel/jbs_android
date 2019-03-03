@@ -1,10 +1,14 @@
 package com.example.jbs;
 
 import android.app.Activity;
+import android.content.Context;
 import android.content.pm.PackageManager;
 import android.util.Log;
+import android.widget.ImageView;
 
-import com.example.jbs.service.ProfileWebService;
+import com.bumptech.glide.Glide;
+import com.bumptech.glide.load.engine.DiskCacheStrategy;
+import com.bumptech.glide.request.RequestOptions;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -13,7 +17,6 @@ import com.google.gson.GsonBuilder;
 import java.io.IOException;
 
 import androidx.core.app.ActivityCompat;
-import androidx.core.content.ContextCompat;
 //import dagger.Provides;
 import okhttp3.Interceptor;
 import okhttp3.OkHttpClient;
@@ -40,25 +43,33 @@ public class CommonService {
 
     }
     public interface OnRequestPermissionListener{
-        void onRequested();
+        void onPermissionRequested(int REQ_CODE);
     }
-
-    public static void requestPermission(Activity activity, String perm, int MY_REQUEST_CODE, OnRequestPermissionListener listener){
-        if(ContextCompat.checkSelfPermission(activity, perm)
-                != PackageManager.PERMISSION_GRANTED) {
-            if(ActivityCompat.shouldShowRequestPermissionRationale(activity, perm)) {
-                // Show explaination
-                ActivityCompat.requestPermissions(activity, new String[]{perm}, MY_REQUEST_CODE);
-            } else {
-                // Request for permission
-                ActivityCompat.requestPermissions(activity, new String[]{perm}, MY_REQUEST_CODE);
+    public static boolean hasPermissions(Context context, String... permissions) {
+        if(context != null && permissions != null) {
+            for (String permission : permissions) {
+                if(ActivityCompat.checkSelfPermission(context, permission) != PackageManager.PERMISSION_GRANTED) {
+                    return false;
+                }
             }
+        }
+        return true;
+    }
+    public static void requestPermission(Activity activity, String[] perms, int MY_REQUEST_CODE, OnRequestPermissionListener listener){
+        if(!CommonService.hasPermissions(activity, perms)) {
+//            if(ActivityCompat.shouldShowRequestPermissionRationale(activity, perm)) {
+//                // Show explaination
+//                ActivityCompat.requestPermissions(activity, new String[]{perm}, MY_REQUEST_CODE);
+//            } else {
+                // Request for permission
+                ActivityCompat.requestPermissions(activity, perms, MY_REQUEST_CODE);
+//            }
         } else {
             //Granted
-            listener.onRequested();
+            listener.onPermissionRequested(MY_REQUEST_CODE);
         }
     }
-    public void initWebservice() {
+    public Retrofit initWebservice() {
         if(gson == null) {
             gson = new GsonBuilder().create();
         }
@@ -88,8 +99,23 @@ public class CommonService {
                     .client(client)
                     .build();
         }
+        return retrofit;
     }
-    public ProfileWebService provideApiWebservice() {
-        return retrofit.create(ProfileWebService.class);
+    public void displayImage(Context context, ImageView imageView, String encodedURL) {
+        Glide.with(context)
+                .load(encodedURL)
+                .error(R.drawable.unknown_user)
+                .placeholder(R.drawable.unknown_user)
+                .diskCacheStrategy(DiskCacheStrategy.ALL)
+                .apply(RequestOptions.circleCropTransform())
+                .into(imageView)
+        ;
+
     }
+//    public ProfileWebService createService() {
+//        return retrofit.create(ProfileWebService.class);
+//    }
+//    public <T> T createService(final Class<T> service) {
+//        return retrofit.create(service);
+//    }
 }

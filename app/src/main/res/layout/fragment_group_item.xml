@@ -77,14 +77,21 @@
                 android:layout_height="match_parent"
                 android:layout_weight="1"
                 >
-
-                <ToggleButton
-                    style="@style/Widget.MaterialComponents.Button.Icon"
-                    android:layout_width="28dp"
-                    android:layout_height="32dp"
-                    android:backgroundTint="@color/colorAccent"
-                    android:layout_gravity="center_horizontal|center_vertical"
-                    android:background="@drawable/ic_outline_star_border_24px" />
+                <com.google.android.material.button.MaterialButton
+                    style="@style/Button"
+                    android:id="@+id/btnInvite"
+                    android:elevation="@dimen/quad"
+                    android:textSize="12sp"
+                    android:text="Invite"
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent" />
+                <!--<ToggleButton-->
+                    <!--style="@style/Widget.MaterialComponents.Button.Icon"-->
+                    <!--android:layout_width="32dp"-->
+                    <!--android:layout_height="32dp"-->
+                    <!--android:backgroundTint="@color/colorAccent"-->
+                    <!--android:layout_gravity="center_horizontal|center_vertical"-->
+                    <!--android:background="@drawable/ic_outline_star_border_24px" />-->
             </FrameLayout>
 
         </LinearLayout>

@@ -1,0 +1,160 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    tools:context=".fragment.InviteToGroupFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent">
+    <include layout="@layout/appbar_layout"/>
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:elevation="@dimen/oct"
+        android:scrollbars="none"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        >
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:padding="@dimen/oct"
+            android:orientation="vertical"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+            <LinearLayout
+                android:id="@+id/ctnSearchBox"
+                android:layout_marginTop="@dimen/hex"
+                android:weightSum="7"
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toTopOf="@id/ctnProfileInfo"
+                >
+                <com.google.android.material.textfield.TextInputEditText
+                    android:inputType="phone"
+                    android:id="@+id/teMemberUID"
+                    android:layout_weight="6"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content" />
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/btnSearch"
+                    style="@style/TextButton.Icon"
+                    app:icon="@drawable/ic_baseline_search_24px"
+                    android:layout_weight="1"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent" />
+            </LinearLayout>
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/ctnProfileInfo"
+                android:elevation="@dimen/oct"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                tools:visibility="visible"
+                android:visibility="invisible"
+                app:layout_constraintTop_toBottomOf="@id/ctnSearchBox"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                >
+                <LinearLayout
+                    android:weightSum="5"
+                    android:orientation="horizontal"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+                    <androidx.appcompat.widget.AppCompatImageView
+                        android:id="@+id/imgAvatar"
+                        android:src="@drawable/unknown_user"
+                        android:layout_width="0dp"
+                        android:layout_height="175dp"
+                        android:layout_weight="2"/>
+
+                    <androidx.constraintlayout.widget.ConstraintLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="3"
+                        android:orientation="vertical"
+                        android:padding="@dimen/oct">
+                        <TextView
+                            android:id="@+id/lbCommonName"
+                            style="@style/TextAppearance.AppCompat.Medium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toTopOf="@+id/lbFirstName"
+                            app:layout_constraintTop_toTopOf="parent"
+                            tools:layout_editor_absoluteX="8dp"
+                            tools:text="Common Name" />
+
+                        <TextView
+                            android:id="@+id/lbFirstName"
+                            style="@style/TextAppearance.AppCompat.Medium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toTopOf="@+id/lbLastName"
+                            app:layout_constraintTop_toBottomOf="@+id/lbCommonName"
+                            tools:layout_editor_absoluteX="8dp"
+                            tools:text="First Name" />
+
+                        <TextView
+                            android:id="@+id/lbLastName"
+                            style="@style/TextAppearance.AppCompat.Medium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toTopOf="@+id/lbEmail"
+                            app:layout_constraintTop_toBottomOf="@+id/lbFirstName"
+                            tools:layout_editor_absoluteX="8dp"
+                            tools:text="Last Name" />
+
+                        <TextView
+                            android:id="@+id/lbEmail"
+                            style="@style/TextAppearance.AppCompat.Medium"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            app:layout_constraintBottom_toTopOf="@+id/swAdmin"
+                            app:layout_constraintTop_toBottomOf="@+id/lbLastName"
+                            tools:layout_editor_absoluteX="8dp"
+                            tools:text="email@domain.com" />
+
+
+                        <Switch
+                            android:id="@+id/swAdmin"
+                            style="@style/Switcher"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="Invite as Admin "
+                            app:layout_constraintBottom_toTopOf="@+id/btnInvite"
+                            app:layout_constraintTop_toBottomOf="@+id/lbEmail"
+                            tools:checked="true"
+                            tools:layout_editor_absoluteX="8dp" />
+
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/btnInvite"
+                            style="@style/Button"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:text="@string/invite"
+                            app:layout_constraintBottom_toBottomOf="parent"
+                            app:layout_constraintTop_toBottomOf="@+id/swAdmin"
+                            tools:layout_editor_absoluteX="8dp" />
+                    </androidx.constraintlayout.widget.ConstraintLayout>
+                </LinearLayout>
+            </com.google.android.material.card.MaterialCardView>
+            <TextView
+                tools:visibility="visible"
+                android:id="@+id/lbPlaceHolder"
+                android:visibility="visible"
+                style="@style/TextAppearance.AppCompat.Display1"
+                android:layout_margin="@dimen/hex"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Search member by Phone Number to invite"
+                android:gravity="center"
+                android:layout_gravity="center"
+                app:layout_constraintTop_toTopOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintBottom_toBottomOf="parent"
+                />
+        </androidx.constraintlayout.widget.ConstraintLayout>
+    </androidx.core.widget.NestedScrollView>
+</androidx.coordinatorlayout.widget.CoordinatorLayout>

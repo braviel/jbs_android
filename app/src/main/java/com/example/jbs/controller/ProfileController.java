@@ -9,16 +9,21 @@ import com.example.jbs.service.ProfileWebService;
 import java.io.IOException;
 
 import retrofit2.Call;
-import retrofit2.Callback;
 import retrofit2.Response;
+import retrofit2.Retrofit;
 
 public class ProfileController {
     public static String TAG = ProfileController.class.getSimpleName();
+
+    public ProfileWebService getProfileService() {
+        return mProfileService;
+    }
+
     ProfileWebService mProfileService;
     private static final ProfileController ourInstance = new ProfileController();
     private ProfileController() {
-        CommonService.getInstance().initWebservice();
-        mProfileService = CommonService.getInstance().provideApiWebservice();
+        Retrofit retrofit = CommonService.getInstance().initWebservice();
+        mProfileService = retrofit.create(ProfileWebService.class);
     }
     public static ProfileController getInstance() {
         return ourInstance;

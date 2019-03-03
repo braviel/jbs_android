@@ -24,4 +24,14 @@ public class MyFragmentActivity extends AppCompatActivity {
                 .replace(containerId, frag, tag)
                 .commit();
     }
+    public void backOnFragment() {
+        int fragmentsInStack = getSupportFragmentManager().getBackStackEntryCount();
+        if(fragmentsInStack > 1) {
+            getSupportFragmentManager().popBackStack();
+        } else if (fragmentsInStack == 1) {
+            finish();
+        } else {
+            super.onBackPressed();
+        }
+    }
 }

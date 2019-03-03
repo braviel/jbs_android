@@ -1,10 +1,13 @@
 package com.example.jbs.fragment;
 
+import android.Manifest;
 import android.content.Context;
+import android.content.Intent;
 import android.content.SharedPreferences;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.MediaStore;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -21,7 +24,10 @@ import com.bumptech.glide.load.engine.DiskCacheStrategy;
 import com.bumptech.glide.request.RequestOptions;
 import com.example.jbs.CommonService;
 import com.example.jbs.R;
+import com.example.jbs.activity.MainActivity;
+import com.example.jbs.controller.ProfileController;
 import com.example.jbs.repo.DataRepo;
+import com.example.jbs.room.InterestedSkill;
 import com.example.jbs.room.Profile;
 import com.example.jbs.service.ProfileWebService;
 import com.google.android.material.appbar.AppBarLayout;
@@ -46,10 +52,11 @@ import androidx.fragment.app.Fragment;
 import butterknife.BindView;
 import butterknife.BindViews;
 import butterknife.ButterKnife;
-import de.hdodenhof.circleimageview.CircleImageView;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+
+import static android.app.Activity.RESULT_OK;
 //import dagger.android.support.AndroidSupportInjection;
 
 /**
@@ -60,13 +67,16 @@ import retrofit2.Response;
  * Use the {@link ViewProfileFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class ViewProfileFragment extends Fragment implements
-        View.OnClickListener
+public class ViewProfileFragment extends BaseFragment implements
+        View.OnClickListener,
+        CommonService.OnRequestPermissionListener
 {
     public static final String TAG = ViewProfileFragment.class.getSimpleName();
 
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PROFILEUID = "ProfileUID";
+    private static final int REQ_CAMERA = 0;
+    private static final int REQ_GALLERY = 1;
 
     private String mParam2;
     @BindView(R.id.imgAvatar)
@@ -95,6 +105,8 @@ public class ViewProfileFragment extends Fragment implements
     Button btnUpdate;
     @BindView(R.id.app_bar_layout)
     AppBarLayout appBarLayout;
+    @BindView(R.id.btnChangeAvatar)
+    Button btnChangeAvatar;
     @BindViews({R.id.tvCommonName, R.id.tvFirstName, R.id.tvLastName, R.id.tvEmail, R.id.tvUEN,
             R.id.tvAddress1, R.id.tvAddress2, R.id.tvDOB, R.id.tvBuildingName, R.id.tvPostalCode})
     List<TextInputEditText> mTextFields;
@@ -111,8 +123,8 @@ public class ViewProfileFragment extends Fragment implements
         // Required empty public constructor
     }
     private void getCurProfile() {
-        SharedPreferences sharedPref = getActivity().getSharedPreferences("pref", Context.MODE_PRIVATE);
-        mProfileUID = sharedPref.getString(getString(R.string.KeyProfileUID), "");
+        SharedPreferences sharedPref = getActivity().getSharedPreferences(getString(R.string.kJbsPref), Context.MODE_PRIVATE);
+        mProfileUID = sharedPref.getString(getString(R.string.kJbsProfileUID), "");
         Log.i(TAG, "Get Profile No: " + mProfileUID);
     }
     public static ViewProfileFragment newInstance(String profileUID) {
@@ -126,7 +138,6 @@ public class ViewProfileFragment extends Fragment implements
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setHasOptionsMenu(true);
 //        mProfile = new Profile();
         if (getArguments() != null) {
             mProfileUID = getArguments().getString(ARG_PROFILEUID);
@@ -142,16 +153,14 @@ public class ViewProfileFragment extends Fragment implements
         Log.i(TAG, TAG + "CreateView");
         View rootView = inflater.inflate(R.layout.fragment_view_profile, container, false);
         ButterKnife.bind(this, rootView);
-
-        AppCompatActivity activity = (AppCompatActivity)getActivity();
-        activity.setSupportActionBar(toolBar);
-        activity.getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-        activity.getSupportActionBar().setDisplayShowTitleEnabled(false);
         btnUpdate.setOnClickListener(this);
+        btnChangeAvatar.setOnClickListener(this);
+        // Toolbar
+        useToolBar(toolBar, true);
+
         Log.i(TAG, "Curr Phone No: " + mProfileUID);
-//        mProfile.setProfilePhone(mProfileUID);
         CommonService.getInstance().initWebservice();
-        mProfileService = CommonService.getInstance().provideApiWebservice();
+        mProfileService = ProfileController.getInstance().getProfileService();
         Profile p = DataRepo.getInstance().getProfile();
         if(p == null) {
             Log.i(TAG, "Fetching profile info : " + mProfileUID);
@@ -198,8 +207,9 @@ public class ViewProfileFragment extends Fragment implements
     public boolean onOptionsItemSelected(MenuItem item) {
         switch(item.getItemId()) {
             case android.R.id.home:
-                getActivity().onBackPressed();
-                break;
+                Log.i(TAG, "Back");
+                ((MainActivity)getActivity()).onBackPressed();
+                return true;
             case R.id.menu_profile_edit:
                 Log.i(TAG, "Menu Item Edit Clicked" );
                 mIsEditMode = true;
@@ -238,9 +248,56 @@ public class ViewProfileFragment extends Fragment implements
                     createProfile(DataRepo.getInstance().getProfile());
                 }
                 break;
+            case R.id.btnChangeAvatar:
+                CommonService.requestPermission(getActivity(), new String[] {Manifest.permission.CAMERA}
+                        ,REQ_CAMERA,this);
+                break;
         }
 
     }
+    void takePhotoFromCamera() {
+        if(!CommonService.hasPermissions(getActivity(), Manifest.permission.CAMERA)) {
+            CommonService.requestPermission(getActivity(), new String[] {Manifest.permission.CAMERA}
+            ,REQ_CAMERA,this);
+        } else {
+            callCameraIntent();
+        }
+    }
+    private void callCameraIntent() {
+        Intent takePicture = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+        startActivityForResult(takePicture, 0);
+    }
+    void choseGaleryImage() {
+        if(!CommonService.hasPermissions(getActivity(), Manifest.permission.CAMERA)) {
+            CommonService.requestPermission(getActivity(), new String[] {Manifest.permission.CAMERA}
+                    ,REQ_CAMERA,this);
+        } else {
+            callGalleryIntent();
+        }
+    }
+    private void callGalleryIntent() {
+        Intent pickPhoto = new Intent(Intent.ACTION_PICK,
+                MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+        startActivityForResult(pickPhoto, 1);
+    }
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        Log.i(TAG, "Activity request returned: " + requestCode);
+        switch(requestCode) {
+            case 0:
+                if(resultCode == RESULT_OK) {
+
+                }
+                break;
+            case 1:
+                if(resultCode == RESULT_OK) {
+
+                }
+                break;
+        }
+        super.onActivityResult(requestCode, resultCode, data);
+    }
+
     private void updateProfile() {
         Log.i(TAG, "Updating Profile ");
         Profile profile = DataRepo.getInstance().getProfile();
@@ -327,8 +384,21 @@ public class ViewProfileFragment extends Fragment implements
         profile.setProfileEmail(this.tvEmail.getText().toString());
         DataRepo.getInstance().setProfile(profile);
     }
+
+    @Override
+    public void onPermissionRequested(int REQ_CODE) {
+        switch (REQ_CODE) {
+            case REQ_CAMERA:
+                callCameraIntent();
+                break;
+            case REQ_GALLERY:
+                callGalleryIntent();
+                break;
+        }
+    }
+
     public interface OnFragmentInteractionListener {
-        // TODO: Update argument type and name
+        // TODO: Update argument type and namesave
         void onFragmentInteraction(Uri uri);
     }
 
